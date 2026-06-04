@@ -15,4 +15,8 @@ ml CUDA/12.4.0
 
 source .venv/bin/activate
 
-python train_finetune.py -p $1
+if [[ "$s" == *cde* ]]; then
+    python train_finetune_cde.py -p $1
+else
+    python train_finetune.py -p $1
+fi
