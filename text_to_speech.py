@@ -18,6 +18,7 @@ from utils import recursive_munch
 
 
 MEAN, STD = -4, 4
+MIN_STYLE_MEL_FRAMES = 80
 
 
 def parse_args():
@@ -127,6 +128,21 @@ def preprocess(wave, to_mel):
     return (torch.log(1e-5 + mel_tensor.unsqueeze(0)) - MEAN) / STD
 
 
+def approximate_mel_frames(sample_count, to_mel):
+    if sample_count <= 0:
+        return 0
+    return sample_count // to_mel.hop_length + 1
+
+
+def pad_to_min_mel_frames(audio, to_mel, min_frames):
+    frame_count = approximate_mel_frames(len(audio), to_mel)
+    if frame_count >= min_frames:
+        return audio, frame_count
+
+    min_samples = (min_frames - 1) * to_mel.hop_length
+    return np.pad(audio, (0, max(0, min_samples - len(audio)))), frame_count
+
+
 def strip_module_prefix(state_dict):
     if not any(key.startswith("module.") for key in state_dict):
         return state_dict
@@ -174,9 +190,27 @@ def load_tts_model(model_config, checkpoint_path, device):
 
 def compute_style(path, model, to_mel, device, sample_rate):
     wave, sr = librosa.load(path, sr=sample_rate)
-    audio, _ = librosa.effects.trim(wave, top_db=30)
+    trimmed_audio, _ = librosa.effects.trim(wave, top_db=30)
     if sr != sample_rate:
-        audio = librosa.resample(audio, orig_sr=sr, target_sr=sample_rate)
+        wave = librosa.resample(wave, orig_sr=sr, target_sr=sample_rate)
+        trimmed_audio = librosa.resample(trimmed_audio, orig_sr=sr, target_sr=sample_rate)
+
+    trimmed_frames = approximate_mel_frames(len(trimmed_audio), to_mel)
+    if trimmed_frames >= MIN_STYLE_MEL_FRAMES:
+        audio = trimmed_audio
+    else:
+        audio, untrimmed_frames = pad_to_min_mel_frames(wave, to_mel, MIN_STYLE_MEL_FRAMES)
+        if untrimmed_frames < MIN_STYLE_MEL_FRAMES:
+            print(
+                f"Warning: reference {path} trimmed to {trimmed_frames} mel frames; "
+                f"padding untrimmed audio to {MIN_STYLE_MEL_FRAMES} frames."
+            )
+        else:
+            print(
+                f"Warning: reference {path} trimmed to {trimmed_frames} mel frames; "
+                "using untrimmed audio."
+            )
+
     mel_tensor = preprocess(audio, to_mel).to(device)
 
     with torch.no_grad():
