@@ -638,6 +638,10 @@ def build_model(args, text_aligner, pitch_extractor, bert):
     
     style_encoder = StyleEncoder(dim_in=args.dim_in, style_dim=args.style_dim, max_conv_dim=args.hidden_dim) # acoustic style encoder
     predictor_encoder = StyleEncoder(dim_in=args.dim_in, style_dim=args.style_dim, max_conv_dim=args.hidden_dim) # prosodic style encoder
+    cde = None
+    if getattr(getattr(args, "cde", None), "enabled", False):
+        from cde import NeuralCDE
+        cde = NeuralCDE(channels=args.hidden_dim, **args.cde.params)
         
     # define diffusion model
     if args.multispeaker:
@@ -690,6 +694,8 @@ def build_model(args, text_aligner, pitch_extractor, bert):
             # slm discriminator head
             wd = WavLMDiscriminator(args.slm.hidden, args.slm.nlayers, args.slm.initial_channel),
        )
+    if cde is not None:
+        nets.cde = cde
     
     return nets
 

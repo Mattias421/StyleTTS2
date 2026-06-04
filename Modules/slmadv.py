@@ -85,6 +85,12 @@ class SLMAdversarialLoss(torch.nn.Module):
         for bib in range(len(output_lengths)):
             s2s_attn[bib, :ref_lengths[bib], :output_lengths[bib]] = attn_preds[bib]
 
+        with torch.no_grad():
+            if 'cde' in self.model:
+                cde_durations = s2s_attn.sum(axis=-1).detach()
+                cde_mask = (~text_mask).unsqueeze(1).float()
+                t_en = self.model.cde(t_en, cde_mask, cde_durations)
+
         asr_pred = t_en @ s2s_attn
 
         _, p_pred = self.model.predictor(d_en, s_dur, 
