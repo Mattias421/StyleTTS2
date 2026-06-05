@@ -1,4 +1,4 @@
-model_config: Models/ESD/config_ft.yml
+model_config: Models/ESD_small_cde_dt025/config_ft.yml
 checkpoint: Models/ESD/epoch_2nd_00009.pth
 root_path: /store/store2/data
 split: val
