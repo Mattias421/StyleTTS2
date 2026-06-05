@@ -2,6 +2,9 @@ SoundFile
 torchaudio
 munch
 torch
+torchcde
+torchdiffeq
+torchsde
 pydub
 pyyaml
 librosa

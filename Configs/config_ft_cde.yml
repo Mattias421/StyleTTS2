@@ -1,15 +1,14 @@
 log_dir: "Models/ESD"
-save_freq: 5
+save_freq: 1
 log_interval: 10
 device: "cuda"
 epochs: 50 # number of finetuning epoch (1 hour of data)
 batch_size: 8
 max_len: 100 # maximum number of frames (maybe reduce as we sometimes get mem err
-  # pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
-pretrained_model: "Models/ESD/epoch_2nd_00009.pth"
+# pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
+pretrained_model: "Models/ESD/epoch_2nd_00004.pth"
 second_stage_load_pretrained: true # set to true if the pre-trained model is for 2nd stage
-  # load_only_params: true # set to true if do not want to load epoch numbers and optimizer parameters
-load_only_params: false
+load_only_params: false # set to true if do not want to load epoch numbers and optimizer parameters
 
 F0_path: "Utils/JDC/bst.t7"
 ASR_config: "Utils/ASR/config.yml"
@@ -19,7 +18,7 @@ PLBERT_dir: 'Utils/PLBERT/'
 data_params:
   train_data: "Data/train_list_esd.txt"
   val_data: "Data/val_list_esd.txt"
-  root_path: "/store/store2/data"
+  root_path: "/store/store4/data"
   OOD_data: "Data/ref_val_list_esd.txt"
   min_length: 50 # sample until texts with this size are obtained for OOD texts
 
@@ -44,6 +43,23 @@ model_params:
   style_dim: 128 # style vector size
   
   dropout: 0.2
+
+  cde:
+      enabled: true
+      params:
+          hidden_channels: 128
+          interpolation: 'linear'
+          solver: 'reversible_heun'
+          num_layers: 4
+          vf_output_activation: 'none'
+          readout_type: 'unet'
+          time_norm_mode: 'utterance'
+          time_norm_value: 1024.0
+          min_duration: 0.001
+          adjoint: true
+          dt: 1.0
+          atol: 0.00001
+          rtol: 0.00001
 
   # config for decoder
   decoder: 
@@ -101,6 +117,7 @@ optimizer_params:
   lr: 0.0001 # general learning rate
   bert_lr: 0.00001 # learning rate for PLBERT
   ft_lr: 0.0001 # learning rate for acoustic modules
+  cde_lr: 0.0001 # learning rate for CDE module
   
 slmadv_params:
   min_len: 400 # minimum length of samples
