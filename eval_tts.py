@@ -275,6 +275,13 @@ def run_command(command):
     return proc.returncode, proc.stdout
 
 
+def summarize_log_f0_output(output):
+    for line in reversed(output.splitlines()):
+        if line.startswith("Average:"):
+            return line + "\n"
+    return output
+
+
 def collect_metric_artifacts(eval_output_dir, samples_dir):
     artifact_map = {
         "utt2mcd.log": "eval_tts_utt2mcd.log",
@@ -373,6 +380,8 @@ def main():
                 str(args.nj),
             ]
             outputs["f0"] = run_command(commands["f0"])
+            if outputs["f0"][0] == 0:
+                outputs["f0"] = (outputs["f0"][0], summarize_log_f0_output(outputs["f0"][1]))
 
         artifacts = collect_metric_artifacts(gen_eval_dir, samples_dir)
 
