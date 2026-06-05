@@ -15,12 +15,13 @@ class Downsample1D(nn.Module):
         return self.conv(x)
 
 class Block1D(torch.nn.Module):
-    def __init__(self, dim, dim_out, groups=8):
+    def __init__(self, dim, dim_out, groups=8, dropout: float = 0.0):
         super().__init__()
         self.block = torch.nn.Sequential(
             torch.nn.Conv1d(dim, dim_out, 3, padding=1),
             torch.nn.GroupNorm(groups, dim_out),
             nn.Mish(),
+            nn.Dropout(float(dropout)),
         )
 
     def forward(self, x, mask):
@@ -70,15 +71,35 @@ class Upsample1D(nn.Module):
 class UNet1D(nn.Module):
     """Small 1D UNet using existing decoder.py blocks."""
 
-    def __init__(self, in_channels: int, mid_channels: int, out_channels: int):
+    def __init__(
+        self,
+        in_channels: int,
+        mid_channels: int,
+        out_channels: int,
+        num_layers: int = 1,
+        dropout: float = 0.0,
+    ):
         super().__init__()
         self.mid_channels = int(mid_channels)
+        self.num_layers = int(num_layers)
+        if self.num_layers < 1:
+            raise ValueError(f"Expected num_layers >= 1, got {self.num_layers}")
         groups = self._groups_for(self.mid_channels)
-        self.in_block = Block1D(in_channels, self.mid_channels, groups=groups)
+        self.in_block = Block1D(in_channels, self.mid_channels, groups=groups, dropout=dropout)
         self.down = Downsample1D(self.mid_channels)
-        self.mid = Block1D(self.mid_channels, self.mid_channels, groups=groups)
+        self.mid_blocks = nn.ModuleList(
+            [
+                Block1D(self.mid_channels, self.mid_channels, groups=groups, dropout=dropout)
+                for _ in range(self.num_layers)
+            ]
+        )
         self.up = Upsample1D(self.mid_channels, use_conv_transpose=True)
-        self.out_block = Block1D(2 * self.mid_channels, self.mid_channels, groups=groups)
+        self.out_block = Block1D(
+            2 * self.mid_channels,
+            self.mid_channels,
+            groups=groups,
+            dropout=dropout,
+        )
         self.proj = nn.Conv1d(self.mid_channels, out_channels, 1)
 
     @staticmethod
@@ -92,7 +113,9 @@ class UNet1D(nn.Module):
         x0 = self.in_block(x, mask)
         d = self.down(x0)
         d_mask = torch.nn.functional.interpolate(mask, size=d.shape[-1], mode="nearest")
-        m = self.mid(d, d_mask)
+        m = d
+        for mid_block in self.mid_blocks:
+            m = mid_block(m, d_mask)
         u = self.up(m)
         if u.shape[-1] != x0.shape[-1]:
             u = torch.nn.functional.interpolate(u, size=x0.shape[-1], mode="nearest")
@@ -109,15 +132,22 @@ class CDEFunc(torch.nn.Module):
         width=None,
         num_layers: int = 2,
         output_activation: str = "none",
+        dropout: float = 0.0,
     ):
         super(CDEFunc, self).__init__()
-        del width, num_layers
+        del width
         self.input_channels = input_channels
         self.hidden_channels = hidden_channels
         if output_activation not in {"none", "tanh"}:
             raise ValueError(f"Unknown output_activation '{output_activation}'")
         self.output_activation = output_activation
-        self.unet = UNet1D(in_channels=1, mid_channels=hidden_channels, out_channels=input_channels)
+        self.unet = UNet1D(
+            in_channels=1,
+            mid_channels=hidden_channels,
+            out_channels=input_channels,
+            num_layers=num_layers,
+            dropout=dropout,
+        )
 
     def forward(self, t, z):
         # z has shape (batch, hidden_channels)
@@ -161,6 +191,7 @@ class NeuralCDE(nn.Module):
         dt: float = 0.01,
         atol: float = 1e-5,
         rtol: float = 1e-5,
+        dropout: float = 0.0,
     ):
         super().__init__()
         if interpolation not in {"linear", "cubic"}:
@@ -186,6 +217,9 @@ class NeuralCDE(nn.Module):
         self.dt = float(dt)
         self.atol = float(atol)
         self.rtol = float(rtol)
+        self.dropout = float(dropout)
+        if not 0.0 <= self.dropout < 1.0:
+            raise ValueError(f"Expected dropout in [0, 1), got {self.dropout}")
 
         self.input_channels = self.channels + 1
         self.func = CDEFunc(
@@ -193,18 +227,23 @@ class NeuralCDE(nn.Module):
             self.hidden_channels,
             num_layers=num_layers,
             output_activation=vf_output_activation,
+            dropout=self.dropout,
         )
         self.init_rf = 8
         self.initial_unet = UNet1D(
             in_channels=self.input_channels,
             mid_channels=self.hidden_channels,
             out_channels=self.hidden_channels,
+            num_layers=num_layers,
+            dropout=self.dropout,
         )
         if self.readout_type == "unet":
             self.readout_unet = UNet1D(
                 in_channels=self.hidden_channels,
                 mid_channels=self.hidden_channels,
                 out_channels=self.channels,
+                num_layers=num_layers,
+                dropout=self.dropout,
             )
             self.readout_linear = None
         else:
