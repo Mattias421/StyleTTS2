@@ -3,6 +3,8 @@ import argparse
 import contextlib
 import json
 import random
+import re
+import string
 import wave
 from dataclasses import dataclass
 from pathlib import Path
@@ -373,6 +375,12 @@ class IpaPhonemizer:
         return ipa
 
 
+def normalize_styletts2_phoneme_text(text: str) -> str:
+    """Match the token spacing StyleTTS2 expects in its filelists."""
+    spaced = re.sub(rf"\s*([{re.escape(string.punctuation)}])\s*", r" \1 ", text.strip())
+    return re.sub(r"\s+", " ", spaced).strip()
+
+
 def write_manifest(
     path: Path,
     records: list[Utterance],
@@ -380,7 +388,8 @@ def write_manifest(
 ) -> None:
     with path.open("w", encoding="utf-8") as output:
         for record in records:
-            ipa = ipa_phonemizer.phonemize(record.text) if ipa_phonemizer is not None else record.text
+            raw_text = ipa_phonemizer.phonemize(record.text) if ipa_phonemizer is not None else record.text
+            ipa = normalize_styletts2_phoneme_text(raw_text)
             output.write(f"{record.wav_path}|{ipa}|{record.speaker_id}\n")
 
 

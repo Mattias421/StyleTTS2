@@ -1,200 +1,200 @@
-ESD/0011/Neutral/0011_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|0
-ESD/0011/Angry/0011_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|0
-ESD/0011/Happy/0011_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|0
-ESD/0011/Sad/0011_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|0
-ESD/0011/Surprise/0011_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|0
-ESD/0012/Neutral/0012_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|1
-ESD/0012/Angry/0012_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|1
-ESD/0012/Happy/0012_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|1
-ESD/0012/Sad/0012_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|1
-ESD/0012/Surprise/0012_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|1
-ESD/0013/Neutral/0013_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|2
-ESD/0013/Angry/0013_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ɔːɹ ðɛɹ dᵻvˈoːɹs.|2
-ESD/0013/Happy/0013_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|2
-ESD/0013/Sad/0013_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|2
-ESD/0013/Surprise/0013_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|2
-ESD/0014/Neutral/0014_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|3
-ESD/0014/Angry/0014_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|3
-ESD/0014/Happy/0014_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|3
-ESD/0014/Sad/0014_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|3
-ESD/0014/Surprise/0014_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|3
-ESD/0015/Neutral/0015_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|4
-ESD/0015/Angry/0015_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|4
-ESD/0015/Happy/0015_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|4
-ESD/0015/Sad/0015_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|4
-ESD/0015/Surprise/0015_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|4
-ESD/0016/Neutral/0016_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|5
-ESD/0016/Angry/0016_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|5
-ESD/0016/Happy/0016_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|5
-ESD/0016/Sad/0016_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|5
-ESD/0016/Surprise/0016_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|5
-ESD/0017/Neutral/0017_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|6
-ESD/0017/Angry/0017_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|6
-ESD/0017/Happy/0017_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|6
-ESD/0017/Sad/0017_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|6
-ESD/0017/Surprise/0017_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|6
-ESD/0018/Neutral/0018_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|7
-ESD/0018/Angry/0018_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|7
-ESD/0018/Happy/0018_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|7
-ESD/0018/Sad/0018_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|7
-ESD/0018/Surprise/0018_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|7
-ESD/0019/Neutral/0019_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|8
-ESD/0019/Angry/0019_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|8
-ESD/0019/Happy/0019_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|8
-ESD/0019/Sad/0019_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|8
-ESD/0019/Surprise/0019_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|8
-ESD/0020/Neutral/0020_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|9
-ESD/0020/Angry/0020_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|9
-ESD/0020/Happy/0020_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|9
-ESD/0020/Sad/0020_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|9
-ESD/0020/Surprise/0020_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ, ʌv ðɛɹ dᵻvˈoːɹs.|9
-ESD/0011/Neutral/0011_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|0
-ESD/0011/Angry/0011_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|0
-ESD/0011/Happy/0011_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|0
-ESD/0011/Sad/0011_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|0
-ESD/0011/Surprise/0011_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|0
-ESD/0012/Neutral/0012_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|1
-ESD/0012/Angry/0012_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|1
-ESD/0012/Happy/0012_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|1
-ESD/0012/Sad/0012_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|1
-ESD/0012/Surprise/0012_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|1
-ESD/0013/Neutral/0013_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|2
-ESD/0013/Angry/0013_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|2
-ESD/0013/Happy/0013_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|2
-ESD/0013/Sad/0013_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|2
-ESD/0013/Surprise/0013_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|2
-ESD/0014/Neutral/0014_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|3
-ESD/0014/Angry/0014_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|3
-ESD/0014/Happy/0014_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|3
-ESD/0014/Sad/0014_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|3
-ESD/0014/Surprise/0014_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|3
-ESD/0015/Neutral/0015_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|4
-ESD/0015/Angry/0015_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|4
-ESD/0015/Happy/0015_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|4
-ESD/0015/Sad/0015_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|4
-ESD/0015/Surprise/0015_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|4
-ESD/0016/Neutral/0016_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|5
-ESD/0016/Angry/0016_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|5
-ESD/0016/Happy/0016_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|5
-ESD/0016/Sad/0016_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|5
-ESD/0016/Surprise/0016_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|5
-ESD/0017/Neutral/0017_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|6
-ESD/0017/Angry/0017_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|6
-ESD/0017/Happy/0017_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|6
-ESD/0017/Sad/0017_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|6
-ESD/0017/Surprise/0017_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|6
-ESD/0018/Neutral/0018_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|7
-ESD/0018/Angry/0018_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|7
-ESD/0018/Happy/0018_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|7
-ESD/0018/Sad/0018_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|7
-ESD/0018/Surprise/0018_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|7
-ESD/0019/Neutral/0019_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|8
-ESD/0019/Angry/0019_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|8
-ESD/0019/Happy/0019_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|8
-ESD/0019/Sad/0019_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|8
-ESD/0019/Surprise/0019_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|8
-ESD/0020/Neutral/0020_000062.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|9
-ESD/0020/Angry/0020_000412.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|9
-ESD/0020/Happy/0020_000762.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|9
-ESD/0020/Sad/0020_001112.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|9
-ESD/0020/Surprise/0020_001462.wav|tˈɑːm, wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili.|9
-ESD/0011/Neutral/0011_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|0
-ESD/0011/Angry/0011_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|0
-ESD/0011/Happy/0011_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|0
-ESD/0011/Sad/0011_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|0
-ESD/0011/Surprise/0011_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|0
-ESD/0012/Neutral/0012_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|1
-ESD/0012/Angry/0012_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|1
-ESD/0012/Happy/0012_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|1
-ESD/0012/Sad/0012_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|1
-ESD/0012/Surprise/0012_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|1
-ESD/0013/Neutral/0013_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|2
-ESD/0013/Angry/0013_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|2
-ESD/0013/Happy/0013_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|2
-ESD/0013/Sad/0013_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|2
-ESD/0013/Surprise/0013_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|2
-ESD/0014/Neutral/0014_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|3
-ESD/0014/Angry/0014_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|3
-ESD/0014/Happy/0014_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|3
-ESD/0014/Sad/0014_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|3
-ESD/0014/Surprise/0014_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|3
-ESD/0015/Neutral/0015_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|4
-ESD/0015/Angry/0015_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|4
-ESD/0015/Happy/0015_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|4
-ESD/0015/Sad/0015_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|4
-ESD/0015/Surprise/0015_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|4
-ESD/0016/Neutral/0016_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|5
-ESD/0016/Angry/0016_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|5
-ESD/0016/Happy/0016_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|5
-ESD/0016/Sad/0016_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|5
-ESD/0016/Surprise/0016_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|5
-ESD/0017/Neutral/0017_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|6
-ESD/0017/Angry/0017_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|6
-ESD/0017/Happy/0017_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|6
-ESD/0017/Sad/0017_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|6
-ESD/0017/Surprise/0017_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|6
-ESD/0018/Neutral/0018_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|7
-ESD/0018/Angry/0018_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|7
-ESD/0018/Happy/0018_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|7
-ESD/0018/Sad/0018_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|7
-ESD/0018/Surprise/0018_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|7
-ESD/0019/Neutral/0019_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|8
-ESD/0019/Angry/0019_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|8
-ESD/0019/Happy/0019_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|8
-ESD/0019/Sad/0019_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|8
-ESD/0019/Surprise/0019_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|8
-ESD/0020/Neutral/0020_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|9
-ESD/0020/Angry/0020_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|9
-ESD/0020/Happy/0020_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|9
-ESD/0020/Sad/0020_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|9
-ESD/0020/Surprise/0020_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː.|9
-ESD/0011/Neutral/0011_000296.wav|juː wˈoʊk mˌiː ˈʌp!|0
-ESD/0011/Angry/0011_000646.wav|juː wˈoʊk mˌiː ˈʌp!|0
-ESD/0011/Happy/0011_000996.wav|juː wˈoʊk mˌiː ˈʌp!|0
-ESD/0011/Sad/0011_001346.wav|juː wˈoʊk mˌiː ˈʌp!|0
-ESD/0011/Surprise/0011_001696.wav|juː wˈoʊk mˌiː ˈʌp!|0
-ESD/0012/Neutral/0012_000296.wav|juː wˈoʊk mˌiː ˈʌp!|1
-ESD/0012/Angry/0012_000646.wav|juː wˈoʊk mˌiː ˈʌp!|1
-ESD/0012/Happy/0012_000996.wav|juː wˈoʊk mˌiː ˈʌp!|1
-ESD/0012/Sad/0012_001346.wav|juː wˈoʊk mˌiː ˈʌp!|1
-ESD/0012/Surprise/0012_001696.wav|juː wˈoʊk mˌiː ˈʌp!|1
-ESD/0013/Neutral/0013_000296.wav|juː wˈoʊk mˌiː ˈʌp!|2
-ESD/0013/Angry/0013_000646.wav|juː wˈoʊk mˌiː ˈʌp!|2
-ESD/0013/Happy/0013_000996.wav|juː wˈoʊk mˌiː ˈʌp!|2
-ESD/0013/Sad/0013_001346.wav|juː wˈoʊk mˌiː ˈʌp!|2
-ESD/0013/Surprise/0013_001696.wav|juː wˈoʊk mˌiː ˈʌp!|2
-ESD/0014/Neutral/0014_000296.wav|juː wˈoʊk mˌiː ˈʌp!|3
-ESD/0014/Angry/0014_000646.wav|juː wˈoʊk mˌiː ˈʌp!|3
-ESD/0014/Happy/0014_000996.wav|juː wˈoʊk mˌiː ˈʌp!|3
-ESD/0014/Sad/0014_001346.wav|juː wˈoʊk mˌiː ˈʌp!|3
-ESD/0014/Surprise/0014_001696.wav|juː wˈoʊk mˌiː ˈʌp!|3
-ESD/0015/Neutral/0015_000296.wav|juː wˈoʊk mˌiː ˈʌp!|4
-ESD/0015/Angry/0015_000646.wav|juː wˈoʊk mˌiː ˈʌp!|4
-ESD/0015/Happy/0015_000996.wav|juː wˈoʊk mˌiː ˈʌp!|4
-ESD/0015/Sad/0015_001346.wav|juː wˈoʊk mˌiː ˈʌp!|4
-ESD/0015/Surprise/0015_001696.wav|juː wˈoʊk mˌiː ˈʌp!|4
-ESD/0016/Neutral/0016_000296.wav|juː wˈoʊk mˌiː ˈʌp!|5
-ESD/0016/Angry/0016_000646.wav|juː wˈoʊk mˌiː ˈʌp!|5
-ESD/0016/Happy/0016_000996.wav|juː wˈoʊk mˌiː ˈʌp!|5
-ESD/0016/Sad/0016_001346.wav|juː wˈoʊk mˌiː ˈʌp!|5
-ESD/0016/Surprise/0016_001696.wav|juː wˈoʊk mˌiː ˈʌp!|5
-ESD/0017/Neutral/0017_000296.wav|juː wˈoʊk mˌiː ˈʌp!|6
-ESD/0017/Angry/0017_000646.wav|juː wˈoʊk mˌiː ˈʌp!|6
-ESD/0017/Happy/0017_000996.wav|juː wˈoʊk mˌiː ˈʌp!|6
-ESD/0017/Sad/0017_001346.wav|juː wˈoʊk mˌiː ˈʌp!|6
-ESD/0017/Surprise/0017_001696.wav|juː wˈoʊk mˌiː ˈʌp!|6
-ESD/0018/Neutral/0018_000296.wav|juː wˈoʊk mˌiː ˈʌp!|7
-ESD/0018/Angry/0018_000646.wav|juː wˈoʊk mˌiː ˈʌp!|7
-ESD/0018/Happy/0018_000996.wav|juː wˈoʊk mˌiː ˈʌp!|7
-ESD/0018/Sad/0018_001346.wav|juː wˈoʊk mˌiː ˈʌp!|7
-ESD/0018/Surprise/0018_001696.wav|juː wˈoʊk mˌiː ˈʌp!|7
-ESD/0019/Neutral/0019_000296.wav|juː wˈoʊk mˌiː ˈʌp!|8
-ESD/0019/Angry/0019_000646.wav|juː wˈoʊk mˌiː ˈʌp!|8
-ESD/0019/Happy/0019_000996.wav|juː wˈoʊk mˌiː ˈʌp!|8
-ESD/0019/Sad/0019_001346.wav|juː wˈoʊk mˌiː ˈʌp!|8
-ESD/0019/Surprise/0019_001696.wav|juː wˈoʊk mˌiː ˈʌp!|8
-ESD/0020/Neutral/0020_000296.wav|juː wˈoʊk mˌiː ˈʌp!|9
-ESD/0020/Angry/0020_000646.wav|juː wˈoʊk mˌiː ˈʌp!|9
-ESD/0020/Happy/0020_000996.wav|juː wˈoʊk mˌiː ˈʌp!|9
-ESD/0020/Sad/0020_001346.wav|juː wˈoʊk mˌiː ˈʌp!|9
-ESD/0020/Surprise/0020_001696.wav|juː wˈoʊk mˌiː ˈʌp!|9
+ESD/0011/Neutral/0011_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|0
+ESD/0011/Angry/0011_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|0
+ESD/0011/Happy/0011_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|0
+ESD/0011/Sad/0011_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|0
+ESD/0011/Surprise/0011_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|0
+ESD/0012/Neutral/0012_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|1
+ESD/0012/Angry/0012_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|1
+ESD/0012/Happy/0012_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|1
+ESD/0012/Sad/0012_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|1
+ESD/0012/Surprise/0012_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|1
+ESD/0013/Neutral/0013_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|2
+ESD/0013/Angry/0013_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ɔːɹ ðɛɹ dᵻvˈoːɹs .|2
+ESD/0013/Happy/0013_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|2
+ESD/0013/Sad/0013_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|2
+ESD/0013/Surprise/0013_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|2
+ESD/0014/Neutral/0014_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|3
+ESD/0014/Angry/0014_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|3
+ESD/0014/Happy/0014_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|3
+ESD/0014/Sad/0014_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|3
+ESD/0014/Surprise/0014_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|3
+ESD/0015/Neutral/0015_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|4
+ESD/0015/Angry/0015_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|4
+ESD/0015/Happy/0015_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|4
+ESD/0015/Sad/0015_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|4
+ESD/0015/Surprise/0015_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|4
+ESD/0016/Neutral/0016_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|5
+ESD/0016/Angry/0016_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|5
+ESD/0016/Happy/0016_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|5
+ESD/0016/Sad/0016_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|5
+ESD/0016/Surprise/0016_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|5
+ESD/0017/Neutral/0017_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|6
+ESD/0017/Angry/0017_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|6
+ESD/0017/Happy/0017_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|6
+ESD/0017/Sad/0017_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|6
+ESD/0017/Surprise/0017_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|6
+ESD/0018/Neutral/0018_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|7
+ESD/0018/Angry/0018_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|7
+ESD/0018/Happy/0018_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|7
+ESD/0018/Sad/0018_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|7
+ESD/0018/Surprise/0018_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|7
+ESD/0019/Neutral/0019_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|8
+ESD/0019/Angry/0019_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|8
+ESD/0019/Happy/0019_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|8
+ESD/0019/Sad/0019_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|8
+ESD/0019/Surprise/0019_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|8
+ESD/0020/Neutral/0020_000052.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|9
+ESD/0020/Angry/0020_000402.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|9
+ESD/0020/Happy/0020_000752.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|9
+ESD/0020/Sad/0020_001102.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|9
+ESD/0020/Surprise/0020_001452.wav|fɹʌm ˈɔːɡəst ˈeɪtiːnθ , ʌv ðɛɹ dᵻvˈoːɹs .|9
+ESD/0011/Neutral/0011_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|0
+ESD/0011/Angry/0011_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|0
+ESD/0011/Happy/0011_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|0
+ESD/0011/Sad/0011_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|0
+ESD/0011/Surprise/0011_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|0
+ESD/0012/Neutral/0012_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|1
+ESD/0012/Angry/0012_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|1
+ESD/0012/Happy/0012_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|1
+ESD/0012/Sad/0012_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|1
+ESD/0012/Surprise/0012_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|1
+ESD/0013/Neutral/0013_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|2
+ESD/0013/Angry/0013_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|2
+ESD/0013/Happy/0013_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|2
+ESD/0013/Sad/0013_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|2
+ESD/0013/Surprise/0013_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|2
+ESD/0014/Neutral/0014_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|3
+ESD/0014/Angry/0014_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|3
+ESD/0014/Happy/0014_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|3
+ESD/0014/Sad/0014_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|3
+ESD/0014/Surprise/0014_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|3
+ESD/0015/Neutral/0015_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|4
+ESD/0015/Angry/0015_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|4
+ESD/0015/Happy/0015_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|4
+ESD/0015/Sad/0015_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|4
+ESD/0015/Surprise/0015_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|4
+ESD/0016/Neutral/0016_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|5
+ESD/0016/Angry/0016_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|5
+ESD/0016/Happy/0016_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|5
+ESD/0016/Sad/0016_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|5
+ESD/0016/Surprise/0016_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|5
+ESD/0017/Neutral/0017_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|6
+ESD/0017/Angry/0017_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|6
+ESD/0017/Happy/0017_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|6
+ESD/0017/Sad/0017_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|6
+ESD/0017/Surprise/0017_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|6
+ESD/0018/Neutral/0018_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|7
+ESD/0018/Angry/0018_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|7
+ESD/0018/Happy/0018_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|7
+ESD/0018/Sad/0018_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|7
+ESD/0018/Surprise/0018_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|7
+ESD/0019/Neutral/0019_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|8
+ESD/0019/Angry/0019_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|8
+ESD/0019/Happy/0019_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|8
+ESD/0019/Sad/0019_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|8
+ESD/0019/Surprise/0019_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|8
+ESD/0020/Neutral/0020_000062.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|9
+ESD/0020/Angry/0020_000412.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|9
+ESD/0020/Happy/0020_000762.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|9
+ESD/0020/Sad/0020_001112.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|9
+ESD/0020/Surprise/0020_001462.wav|tˈɑːm , wɛnt ˌɔn ˈiːjoːɹ ɡlˈuːmili .|9
+ESD/0011/Neutral/0011_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|0
+ESD/0011/Angry/0011_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|0
+ESD/0011/Happy/0011_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|0
+ESD/0011/Sad/0011_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|0
+ESD/0011/Surprise/0011_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|0
+ESD/0012/Neutral/0012_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|1
+ESD/0012/Angry/0012_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|1
+ESD/0012/Happy/0012_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|1
+ESD/0012/Sad/0012_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|1
+ESD/0012/Surprise/0012_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|1
+ESD/0013/Neutral/0013_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|2
+ESD/0013/Angry/0013_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|2
+ESD/0013/Happy/0013_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|2
+ESD/0013/Sad/0013_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|2
+ESD/0013/Surprise/0013_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|2
+ESD/0014/Neutral/0014_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|3
+ESD/0014/Angry/0014_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|3
+ESD/0014/Happy/0014_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|3
+ESD/0014/Sad/0014_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|3
+ESD/0014/Surprise/0014_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|3
+ESD/0015/Neutral/0015_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|4
+ESD/0015/Angry/0015_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|4
+ESD/0015/Happy/0015_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|4
+ESD/0015/Sad/0015_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|4
+ESD/0015/Surprise/0015_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|4
+ESD/0016/Neutral/0016_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|5
+ESD/0016/Angry/0016_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|5
+ESD/0016/Happy/0016_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|5
+ESD/0016/Sad/0016_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|5
+ESD/0016/Surprise/0016_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|5
+ESD/0017/Neutral/0017_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|6
+ESD/0017/Angry/0017_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|6
+ESD/0017/Happy/0017_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|6
+ESD/0017/Sad/0017_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|6
+ESD/0017/Surprise/0017_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|6
+ESD/0018/Neutral/0018_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|7
+ESD/0018/Angry/0018_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|7
+ESD/0018/Happy/0018_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|7
+ESD/0018/Sad/0018_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|7
+ESD/0018/Surprise/0018_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|7
+ESD/0019/Neutral/0019_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|8
+ESD/0019/Angry/0019_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|8
+ESD/0019/Happy/0019_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|8
+ESD/0019/Sad/0019_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|8
+ESD/0019/Surprise/0019_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|8
+ESD/0020/Neutral/0020_000180.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|9
+ESD/0020/Angry/0020_000530.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|9
+ESD/0020/Happy/0020_000880.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|9
+ESD/0020/Sad/0020_001230.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|9
+ESD/0020/Surprise/0020_001580.wav|tˈoʊst fɹʌmðə bɹˈɛd fɹˈuːt tɹˈiː .|9
+ESD/0011/Neutral/0011_000296.wav|juː wˈoʊk mˌiː ˈʌp !|0
+ESD/0011/Angry/0011_000646.wav|juː wˈoʊk mˌiː ˈʌp !|0
+ESD/0011/Happy/0011_000996.wav|juː wˈoʊk mˌiː ˈʌp !|0
+ESD/0011/Sad/0011_001346.wav|juː wˈoʊk mˌiː ˈʌp !|0
+ESD/0011/Surprise/0011_001696.wav|juː wˈoʊk mˌiː ˈʌp !|0
+ESD/0012/Neutral/0012_000296.wav|juː wˈoʊk mˌiː ˈʌp !|1
+ESD/0012/Angry/0012_000646.wav|juː wˈoʊk mˌiː ˈʌp !|1
+ESD/0012/Happy/0012_000996.wav|juː wˈoʊk mˌiː ˈʌp !|1
+ESD/0012/Sad/0012_001346.wav|juː wˈoʊk mˌiː ˈʌp !|1
+ESD/0012/Surprise/0012_001696.wav|juː wˈoʊk mˌiː ˈʌp !|1
+ESD/0013/Neutral/0013_000296.wav|juː wˈoʊk mˌiː ˈʌp !|2
+ESD/0013/Angry/0013_000646.wav|juː wˈoʊk mˌiː ˈʌp !|2
+ESD/0013/Happy/0013_000996.wav|juː wˈoʊk mˌiː ˈʌp !|2
+ESD/0013/Sad/0013_001346.wav|juː wˈoʊk mˌiː ˈʌp !|2
+ESD/0013/Surprise/0013_001696.wav|juː wˈoʊk mˌiː ˈʌp !|2
+ESD/0014/Neutral/0014_000296.wav|juː wˈoʊk mˌiː ˈʌp !|3
+ESD/0014/Angry/0014_000646.wav|juː wˈoʊk mˌiː ˈʌp !|3
+ESD/0014/Happy/0014_000996.wav|juː wˈoʊk mˌiː ˈʌp !|3
+ESD/0014/Sad/0014_001346.wav|juː wˈoʊk mˌiː ˈʌp !|3
+ESD/0014/Surprise/0014_001696.wav|juː wˈoʊk mˌiː ˈʌp !|3
+ESD/0015/Neutral/0015_000296.wav|juː wˈoʊk mˌiː ˈʌp !|4
+ESD/0015/Angry/0015_000646.wav|juː wˈoʊk mˌiː ˈʌp !|4
+ESD/0015/Happy/0015_000996.wav|juː wˈoʊk mˌiː ˈʌp !|4
+ESD/0015/Sad/0015_001346.wav|juː wˈoʊk mˌiː ˈʌp !|4
+ESD/0015/Surprise/0015_001696.wav|juː wˈoʊk mˌiː ˈʌp !|4
+ESD/0016/Neutral/0016_000296.wav|juː wˈoʊk mˌiː ˈʌp !|5
+ESD/0016/Angry/0016_000646.wav|juː wˈoʊk mˌiː ˈʌp !|5
+ESD/0016/Happy/0016_000996.wav|juː wˈoʊk mˌiː ˈʌp !|5
+ESD/0016/Sad/0016_001346.wav|juː wˈoʊk mˌiː ˈʌp !|5
+ESD/0016/Surprise/0016_001696.wav|juː wˈoʊk mˌiː ˈʌp !|5
+ESD/0017/Neutral/0017_000296.wav|juː wˈoʊk mˌiː ˈʌp !|6
+ESD/0017/Angry/0017_000646.wav|juː wˈoʊk mˌiː ˈʌp !|6
+ESD/0017/Happy/0017_000996.wav|juː wˈoʊk mˌiː ˈʌp !|6
+ESD/0017/Sad/0017_001346.wav|juː wˈoʊk mˌiː ˈʌp !|6
+ESD/0017/Surprise/0017_001696.wav|juː wˈoʊk mˌiː ˈʌp !|6
+ESD/0018/Neutral/0018_000296.wav|juː wˈoʊk mˌiː ˈʌp !|7
+ESD/0018/Angry/0018_000646.wav|juː wˈoʊk mˌiː ˈʌp !|7
+ESD/0018/Happy/0018_000996.wav|juː wˈoʊk mˌiː ˈʌp !|7
+ESD/0018/Sad/0018_001346.wav|juː wˈoʊk mˌiː ˈʌp !|7
+ESD/0018/Surprise/0018_001696.wav|juː wˈoʊk mˌiː ˈʌp !|7
+ESD/0019/Neutral/0019_000296.wav|juː wˈoʊk mˌiː ˈʌp !|8
+ESD/0019/Angry/0019_000646.wav|juː wˈoʊk mˌiː ˈʌp !|8
+ESD/0019/Happy/0019_000996.wav|juː wˈoʊk mˌiː ˈʌp !|8
+ESD/0019/Sad/0019_001346.wav|juː wˈoʊk mˌiː ˈʌp !|8
+ESD/0019/Surprise/0019_001696.wav|juː wˈoʊk mˌiː ˈʌp !|8
+ESD/0020/Neutral/0020_000296.wav|juː wˈoʊk mˌiː ˈʌp !|9
+ESD/0020/Angry/0020_000646.wav|juː wˈoʊk mˌiː ˈʌp !|9
+ESD/0020/Happy/0020_000996.wav|juː wˈoʊk mˌiː ˈʌp !|9
+ESD/0020/Sad/0020_001346.wav|juː wˈoʊk mˌiː ˈʌp !|9
+ESD/0020/Surprise/0020_001696.wav|juː wˈoʊk mˌiː ˈʌp !|9

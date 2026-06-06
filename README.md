@@ -99,6 +99,8 @@ This writes:
 
 If you have access to the raw `ESD_og` transcripts and a working `espeak` backend, you can omit `--source-manifest-dir` and let the script phonemize directly. The current recommendation is to keep the 60-minute run near the existing finetune baseline and increase epochs as the budget shrinks. A practical starting point is 50 epochs for 60m, then 75, 100, 150, and 200 epochs for 30m, 15m, 5m, and 1m respectively. If you want to keep SLM adversarial training disabled, set `joint_epoch` above the configured `epochs`.
 
+The generated phoneme text is normalized so punctuation is tokenized the same way StyleTTS2 expects, for example `hello .` rather than `hello.`.
+
 ### Common Issues
 [@Kreevoz](https://github.com/Kreevoz) has made detailed notes on common issues in finetuning, with suggestions in maximizing audio quality: [#81](https://github.com/yl4579/StyleTTS2/discussions/81). Some of these also apply to training from scratch. [@IIEleven11](https://github.com/IIEleven11) has also made a guideline for fine-tuning: [#128](https://github.com/yl4579/StyleTTS2/discussions/128).
 
