@@ -12,6 +12,7 @@ nltk
 matplotlib
 accelerate
 transformers
+peft
 einops
 einops-exts
 tqdm

@@ -87,6 +87,11 @@ accelerate launch --mixed_precision=fp16 --num_processes=1 train_finetune_accele
 ```
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yl4579/StyleTTS2/blob/main/Colab/StyleTTS2_Finetune_Demo.ipynb)
 
+### Optional CDE PEFT adapter
+The CDE finetune path can be configured like a time-synchronous adapter instead of a full module finetune. If you install `peft` and set `model_params.cde.peft.enabled: true`, the CDE block keeps the same control-flow solve but adds LoRA updates to its learned convolution and linear weights.
+
+This is the practical LoRA-equivalent path for CDE in this repo. It adapts the learned CDE weights, not the CDE solver itself.
+
 ### Common Issues
 [@Kreevoz](https://github.com/Kreevoz) has made detailed notes on common issues in finetuning, with suggestions in maximizing audio quality: [#81](https://github.com/yl4579/StyleTTS2/discussions/81). Some of these also apply to training from scratch. [@IIEleven11](https://github.com/IIEleven11) has also made a guideline for fine-tuning: [#128](https://github.com/yl4579/StyleTTS2/discussions/128).
 

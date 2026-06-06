@@ -60,6 +60,15 @@ model_params:
           dt: 1.0
           atol: 0.00001
           rtol: 0.00001
+      # Optional PEFT/LoRA adapter for the learned CDE weights.
+      # This keeps the time-synchronous solve intact and only injects low-rank
+      # updates into the conv/linear weights inside the CDE block.
+      peft:
+          enabled: false
+          rank: 8
+          alpha: 16
+          dropout: 0.0
+          adapter_name: "cde_lora"
 
   # config for decoder
   decoder: 
