@@ -1,0 +1,92 @@
+log_dir: /exp/exp4/acq22mc/symphony-jobs/CDE-71/data_split_exp1/mimas/base/esd_small_data_split_exp1_base_5m
+save_freq: 1
+log_interval: 10
+device: cuda
+epochs: 30
+batch_size: 4
+max_len: 100
+pretrained_model: /exp/exp4/acq22mc/StyleTTS2/Models/LibriTTS/epochs_2nd_00020.pth
+second_stage_load_pretrained: true
+load_only_params: true
+F0_path: Utils/JDC/bst.t7
+ASR_config: Utils/ASR/config.yml
+ASR_path: Utils/ASR/epoch_00080.pth
+PLBERT_dir: Utils/PLBERT/
+data_params:
+  train_data: Data/train_list_esd_5m.txt
+  val_data: Data/val_list_esd.txt
+  root_path: /store/store4/data
+  OOD_data: Data/ref_val_list_esd.txt
+  min_length: 50
+preprocess_params:
+  sr: 24000
+  spect_params:
+    n_fft: 2048
+    win_length: 1200
+    hop_length: 300
+model_params:
+  multispeaker: true
+  dim_in: 64
+  hidden_dim: 512
+  max_conv_dim: 512
+  n_layer: 3
+  n_mels: 80
+  n_token: 178
+  max_dur: 50
+  style_dim: 128
+  dropout: 0.2
+  decoder:
+    type: hifigan
+    resblock_kernel_sizes: [3, 7, 11]
+    upsample_rates: [10, 5, 3, 2]
+    upsample_initial_channel: 512
+    resblock_dilation_sizes:
+      - [1, 3, 5]
+      - [1, 3, 5]
+      - [1, 3, 5]
+    upsample_kernel_sizes: [20, 10, 6, 4]
+  slm:
+    model: microsoft/wavlm-base-plus
+    sr: 16000
+    hidden: 768
+    nlayers: 13
+    initial_channel: 64
+  diffusion:
+    embedding_mask_proba: 0.1
+    transformer:
+      num_layers: 3
+      num_heads: 8
+      head_features: 64
+      multiplier: 2
+    dist:
+      sigma_data: 0.2
+      estimate_sigma_data: true
+      mean: -3.0
+      std: 1.0
+loss_params:
+  lambda_mel: 5.0
+  lambda_gen: 1.0
+  lambda_slm: 1.0
+  lambda_mono: 1.0
+  lambda_s2s: 1.0
+  lambda_F0: 1.0
+  lambda_norm: 1.0
+  lambda_dur: 1.0
+  lambda_ce: 20.0
+  lambda_sty: 1.0
+  lambda_diff: 1.0
+  diff_epoch: 6
+  joint_epoch: 200
+optimizer_params:
+  lr: 0.0001
+  bert_lr: 0.00001
+  ft_lr: 0.0001
+slmadv_params:
+  min_len: 400
+  max_len: 500
+  batch_percentage: 0.5
+  iter: 10
+  thresh: 5
+  scale: 0.01
+  sig: 1.5
+
