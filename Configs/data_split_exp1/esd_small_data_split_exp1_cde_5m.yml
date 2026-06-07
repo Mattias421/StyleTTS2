@@ -5,7 +5,7 @@ device: cuda
 epochs: 30
 batch_size: 4
 max_len: 100
-pretrained_model: /exp/exp4/acq22mc/StyleTTS2/Models/LibriTTS/epochs_2nd_00020.pth
+pretrained_model: /exp/exp8/acq22mc/StyleTTS2/Models/LibriTTS/epochs_2nd_00020.pth
 second_stage_load_pretrained: true
 load_only_params: true
 F0_path: Utils/JDC/bst.t7
