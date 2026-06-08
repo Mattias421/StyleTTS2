@@ -734,7 +734,7 @@ def main(config_path):
                 best_loss = loss_test / iters_test
             print('Saving..')
             state = {
-                'net':  {key: model[key].state_dict() for key in model}, 
+                'net':  {key: merged_peft_state_dict(model[key]) for key in model},
                 'optimizer': optimizer.state_dict(),
                 'iters': iters,
                 'val_loss': loss_test / iters_test,
