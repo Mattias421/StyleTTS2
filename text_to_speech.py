@@ -111,6 +111,28 @@ def output_name(eval_entry, ref_entry, split_name):
     )
 
 
+def completed_outputs(manifest_path):
+    completed = set()
+    if not manifest_path.exists():
+        return completed
+
+    with open(manifest_path, "r", encoding="utf-8") as manifest:
+        for line_number, line in enumerate(manifest, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise ValueError(
+                    f"{manifest_path}:{line_number}: invalid JSON"
+                ) from exc
+            output_path = Path(row["output_path"])
+            if output_path.exists():
+                completed.add(output_path.resolve())
+    return completed
+
+
 def build_to_mel(model_config):
     preprocess_params = model_config.get("preprocess_params", {})
     spect_params = preprocess_params.get("spect_params", {})
@@ -391,9 +413,19 @@ def main():
 
     style_cache = {}
     manifest_path = output_dir / "manifest.jsonl"
+    resume = bool(config.get("resume", False))
+    completed = completed_outputs(manifest_path) if resume else set()
+    manifest_mode = "a" if resume else "w"
+    if completed:
+        print(f"Resuming with {len(completed)} completed samples.")
 
-    with open(manifest_path, "w", encoding="utf-8") as manifest:
+    with open(manifest_path, manifest_mode, encoding="utf-8") as manifest:
         for index, (eval_entry, ref_entry) in enumerate(paired_entries, start=1):
+            output_path = output_dir / output_name(eval_entry, ref_entry, split_name)
+            if output_path.resolve() in completed:
+                print(f"[{index}/{len(paired_entries)}] already complete: {output_path}")
+                continue
+
             ref_path = root_path / ref_entry["relative_wav"]
             if ref_entry["relative_wav"] not in style_cache:
                 style_cache[ref_entry["relative_wav"]] = compute_style(
@@ -415,7 +447,6 @@ def main():
                 embedding_scale,
             )
 
-            output_path = output_dir / output_name(eval_entry, ref_entry, split_name)
             sf.write(output_path, wav, sample_rate)
             row = {
                 "index": index,

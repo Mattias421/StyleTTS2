@@ -12,3 +12,14 @@ This directory contains the split experiment configs for issue `CDE-71`.
   - `15m`: `epochs=10`, `diff_epoch=4`, `joint_epoch=200`
   - `30m`: `epochs=5`, `diff_epoch=2`, `joint_epoch=200`
   - `60m`: `epochs=3`, `diff_epoch=2`, `joint_epoch=200`
+
+Validation synthesis and MCD/log-F0 evaluation use:
+
+```bash
+# Run from the issue workspace on each named host.
+scripts/run_data_split_exp1_eval.sh base 0  # mimas
+scripts/run_data_split_exp1_eval.sh cde 0   # phoebe
+```
+
+The queue is resumable and waits for each training run's successful exit marker
+and final checkpoint before generating the 2,000 paired validation samples.
