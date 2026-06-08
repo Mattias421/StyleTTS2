@@ -372,28 +372,26 @@ class NeuralCDE(nn.Module):
         return y_t.transpose(1, 2)  # (b, channels, length)
 
 
-def _collect_peft_target_parameters(module: nn.Module) -> list[str]:
-    """Collect trainable tensor parameters that PEFT can adapt with LoRA.
+def _collect_peft_target_modules(module: nn.Module) -> list[str]:
+    """Collect module names that PEFT can adapt with LoRA.
 
-    PEFT's low-level API can target arbitrary 2D/3D parameters. For the CDE
-    block we adapt the learned projection and convolution weights, which keeps
-    the time-synchronous solve intact while reducing the number of trainable
-    parameters.
+    For the CDE block we adapt the learned projection and Conv1d modules, which
+    keeps the time-synchronous solve intact while reducing the number of
+    trainable parameters. ConvTranspose1d is intentionally excluded because the
+    PEFT module path is the standard convolutional LoRA implementation.
     """
 
     target_names: list[str] = []
     supported_leaf_types = (
         nn.Conv1d,
-        nn.ConvTranspose1d,
         nn.Linear,
     )
     for module_name, submodule in module.named_modules():
         if not isinstance(submodule, supported_leaf_types):
             continue
-        if getattr(submodule, "weight", None) is None:
+        if not module_name:
             continue
-        param_name = f"{module_name}.weight" if module_name else "weight"
-        target_names.append(param_name)
+        target_names.append(module_name)
     return target_names
 
 
@@ -412,19 +410,18 @@ def maybe_inject_cde_lora(module: nn.Module, peft_cfg) -> nn.Module:
             "model_params.cde.peft.enabled."
         )
 
-    target_parameters = getattr(peft_cfg, "target_parameters", None)
-    if target_parameters is None or len(target_parameters) == 0:
-        target_parameters = _collect_peft_target_parameters(module)
-    if len(target_parameters) == 0:
-        raise ValueError("No PEFT target parameters were found in the CDE module.")
+    target_modules = getattr(peft_cfg, "target_modules", None)
+    if target_modules is None or len(target_modules) == 0:
+        target_modules = _collect_peft_target_modules(module)
+    if len(target_modules) == 0:
+        raise ValueError("No PEFT target modules were found in the CDE module.")
 
     lora_config = LoraConfig(
         r=int(getattr(peft_cfg, "rank", 8)),
         lora_alpha=int(getattr(peft_cfg, "alpha", 16)),
         lora_dropout=float(getattr(peft_cfg, "dropout", 0.0)),
         bias="none",
-        target_modules=[],
-        target_parameters=list(target_parameters),
+        target_modules=list(target_modules),
     )
     adapter_name = str(getattr(peft_cfg, "adapter_name", "cde_lora"))
     return inject_adapter_in_model(lora_config, module, adapter_name=adapter_name)

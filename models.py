@@ -640,9 +640,8 @@ def build_model(args, text_aligner, pitch_extractor, bert):
     predictor_encoder = StyleEncoder(dim_in=args.dim_in, style_dim=args.style_dim, max_conv_dim=args.hidden_dim) # prosodic style encoder
     cde = None
     if getattr(getattr(args, "cde", None), "enabled", False):
-        from cde import NeuralCDE, maybe_inject_cde_lora
+        from cde import NeuralCDE
         cde = NeuralCDE(channels=args.hidden_dim, **args.cde.params)
-        cde = maybe_inject_cde_lora(cde, getattr(args.cde, "peft", None))
         
     # define diffusion model
     if args.multispeaker:

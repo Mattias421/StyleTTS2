@@ -141,6 +141,10 @@ def main(config_path):
     iters = 0
 
     load_pretrained = config.get('pretrained_model', '') != '' and config.get('second_stage_load_pretrained', False)
+    cde_peft_enabled = bool(
+        'cde' in model
+        and getattr(getattr(getattr(model_params, "cde", None), "peft", None), "enabled", False)
+    )
     
     if not load_pretrained:
         if config.get('first_stage_path', '') != '':
@@ -160,6 +164,23 @@ def main(config_path):
             model.predictor_encoder = copy.deepcopy(model.style_encoder)
         else:
             raise ValueError('You need to specify the path to the first stage model.') 
+
+    if load_pretrained and cde_peft_enabled:
+        if not config.get('load_only_params', True):
+            raise ValueError(
+                "CDE PEFT finetuning requires load_only_params: true because the base optimizer "
+                "state does not contain adapter parameters."
+            )
+        model, _, start_epoch, iters = load_checkpoint(
+            model,
+            None,
+            config['pretrained_model'],
+            load_only_params=True,
+        )
+
+    if cde_peft_enabled:
+        from cde import maybe_inject_cde_lora
+        model.cde.module = maybe_inject_cde_lora(model.cde.module, model_params.cde.peft).to(device)
 
     gl = GeneratorLoss(model.mpd, model.msd).to(device)
     dl = DiscriminatorLoss(model.mpd, model.msd).to(device)
@@ -217,7 +238,7 @@ def main(config_path):
             g['weight_decay'] = 1e-4
         
     # load models if there is a model
-    if load_pretrained:
+    if load_pretrained and not cde_peft_enabled:
         model, optimizer, start_epoch, iters = load_checkpoint(model,  optimizer, config['pretrained_model'],
                                     load_only_params=config.get('load_only_params', True))
         
