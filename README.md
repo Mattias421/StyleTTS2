@@ -92,6 +92,14 @@ The CDE finetune path can be configured like a time-synchronous adapter instead 
 
 This is the practical LoRA-equivalent path for CDE in this repo. It adapts the learned CDE weights, not the CDE solver itself.
 
+For a non-CDE PEFT baseline, run:
+```bash
+accelerate launch --mixed_precision=fp16 --num_processes=1 train_finetune_accelerate_peft.py --config_path ./Configs/experiment_esd_small_peft.yml
+```
+This freezes the standard text encoder's base weights and trains low-rank
+updates on its convolution stack at the same pre-alignment point where the CDE
+block is inserted. Other modules retain the existing finetuning behavior.
+
 ### Common Issues
 [@Kreevoz](https://github.com/Kreevoz) has made detailed notes on common issues in finetuning, with suggestions in maximizing audio quality: [#81](https://github.com/yl4579/StyleTTS2/discussions/81). Some of these also apply to training from scratch. [@IIEleven11](https://github.com/IIEleven11) has also made a guideline for fine-tuning: [#128](https://github.com/yl4579/StyleTTS2/discussions/128).
 
