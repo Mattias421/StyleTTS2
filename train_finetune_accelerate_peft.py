@@ -302,6 +302,7 @@ def main(config_path):
     )
 
     for epoch in range(start_epoch, epochs):
+        reached_max_train_steps = False
         running_loss = 0
         start_time = time.time()
 
@@ -602,9 +603,9 @@ def main(config_path):
 
             iters = iters + 1
             if max_train_steps is not None and iters >= int(max_train_steps):
-                logger.info('Reached max_train_steps=%d; stopping after smoke validation.', max_train_steps)
-                writer.close()
-                return
+                logger.info('Reached max_train_steps=%d; running smoke validation and checkpoint export.', max_train_steps)
+                reached_max_train_steps = True
+                break
             
             if (i+1)%log_interval == 0:
                 logger.info ('Epoch [%d/%d], Step [%d/%d], Loss: %.5f, Disc Loss: %.5f, Dur Loss: %.5f, CE Loss: %.5f, Norm Loss: %.5f, F0 Loss: %.5f, LM Loss: %.5f, Gen Loss: %.5f, Sty Loss: %.5f, Diff Loss: %.5f, DiscLM Loss: %.5f, GenLM Loss: %.5f, SLoss: %.5f, S2S Loss: %.5f, Mono Loss: %.5f'
@@ -746,7 +747,7 @@ def main(config_path):
         writer.add_scalar('eval/F0_loss', loss_f / iters_test, epoch + 1)
         
         
-        if (epoch + 1) % save_freq == 0 :
+        if reached_max_train_steps or (epoch + 1) % save_freq == 0:
             if (loss_test / iters_test) < best_loss:
                 best_loss = loss_test / iters_test
             print('Saving..')
@@ -766,6 +767,10 @@ def main(config_path):
 
                 with open(osp.join(log_dir, osp.basename(config_path)), 'w') as outfile:
                     yaml.dump(config, outfile, default_flow_style=True)
+
+        if reached_max_train_steps:
+            writer.close()
+            return
 
                             
 if __name__=="__main__":
