@@ -163,9 +163,8 @@ def main(config_path):
 
     if load_pretrained and cde_peft_enabled:
         if not config.get('load_only_params', True):
-            raise ValueError(
-                "CDE PEFT finetuning requires load_only_params: true because the base optimizer "
-                "state does not contain adapter parameters."
+            logger.info(
+                "CDE PEFT ignores the pretrained optimizer state and loads model parameters only."
             )
         model, _, start_epoch, iters = load_checkpoint(
             model,

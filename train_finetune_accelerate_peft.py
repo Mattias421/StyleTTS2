@@ -31,46 +31,24 @@ from Modules.diffusion.sampler import DiffusionSampler, ADPM2Sampler, KarrasSche
 from optimizers import build_optimizer
 
 from accelerate import Accelerator
-from peft import LoraConfig, inject_adapter_in_model
+from peft_adapters import inject_lora_adapter
 
 accelerator = Accelerator()
 
 
-def _default_text_encoder_targets(module):
-    return [
-        name
-        for name, submodule in module.named_modules()
-        if name.startswith("cnn.") and isinstance(submodule, nn.Conv1d)
-    ]
-
-
-def inject_text_encoder_lora(module, peft_config):
-    for parameter in module.parameters():
-        parameter.requires_grad = False
-
-    targets = peft_config.get("target_modules") or _default_text_encoder_targets(module)
-    if not targets:
-        raise ValueError("No compatible text encoder parameters were found for PEFT.")
-
-    config = LoraConfig(
-        r=int(peft_config.get("rank", 8)),
-        lora_alpha=int(peft_config.get("alpha", 16)),
-        lora_dropout=float(peft_config.get("dropout", 0.0)),
-        bias="none",
-        target_modules=targets,
-    )
-    adapter_name = str(peft_config.get("adapter_name", "text_encoder_lora"))
-    module = inject_adapter_in_model(config, module, adapter_name=adapter_name)
-
-    trainable = sum(parameter.numel() for parameter in module.parameters() if parameter.requires_grad)
-    total = sum(parameter.numel() for parameter in module.parameters())
-    if trainable == 0:
-        raise RuntimeError("PEFT injection did not create any trainable adapter parameters.")
-    print(
-        "Text encoder PEFT targets: %s; trainable parameters: %d/%d (%.3f%%)"
-        % (", ".join(targets), trainable, total, 100 * trainable / total)
-    )
-    return module
+def _module_peft_config(peft_config, module_name):
+    module_config = {
+        key: peft_config[key]
+        for key in ("rank", "alpha", "dropout")
+        if key in peft_config
+    }
+    if module_name == "text_encoder":
+        for key in ("target_modules", "adapter_name"):
+            if key in peft_config:
+                module_config[key] = peft_config[key]
+    module_config.update(peft_config.get(module_name, {}))
+    module_config.setdefault("enabled", module_name == "text_encoder")
+    return module_config
 
 
 # simple fix for dataparallel that allows access to class attributes
@@ -217,8 +195,26 @@ def main(config_path):
     peft_config = config.get('peft', {})
     if not peft_config.get('enabled', True):
         raise ValueError("train_finetune_accelerate_peft.py requires peft.enabled: true.")
-    text_encoder = model.text_encoder.module
-    model.text_encoder.module = inject_text_encoder_lora(text_encoder, peft_config).to(device)
+
+    text_encoder_config = _module_peft_config(peft_config, "text_encoder")
+    decoder_config = _module_peft_config(peft_config, "decoder")
+    if not text_encoder_config["enabled"] and not decoder_config["enabled"]:
+        raise ValueError("PEFT must be enabled for at least one of text_encoder or decoder.")
+    if text_encoder_config["enabled"]:
+        model.text_encoder.module = inject_lora_adapter(
+            model.text_encoder.module,
+            text_encoder_config,
+            label="Text encoder",
+            default_adapter_name="text_encoder_lora",
+            target_predicate=lambda name, _: name.startswith("cnn."),
+        ).to(device)
+    if decoder_config["enabled"]:
+        model.decoder.module = inject_lora_adapter(
+            model.decoder.module,
+            decoder_config,
+            label="Decoder",
+            default_adapter_name="decoder_lora",
+        ).to(device)
 
     gl = GeneratorLoss(model.mpd, model.msd).to(device)
     dl = DiscriminatorLoss(model.mpd, model.msd).to(device)

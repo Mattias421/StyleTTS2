@@ -33,7 +33,12 @@ peft:
   rank: 8
   alpha: 16
   dropout: 0.0
-  adapter_name: "text_encoder_lora"
+  text_encoder:
+    enabled: true
+    adapter_name: "text_encoder_lora"
+  decoder:
+    enabled: true
+    adapter_name: "decoder_lora"
 
 model_params:
   multispeaker: true

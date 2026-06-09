@@ -96,9 +96,12 @@ For a non-CDE PEFT baseline, run:
 ```bash
 accelerate launch --mixed_precision=fp16 --num_processes=1 train_finetune_accelerate_peft.py --config_path ./Configs/experiment_esd_small_peft.yml
 ```
-This freezes the standard text encoder's base weights and trains low-rank
-updates on its convolution stack at the same pre-alignment point where the CDE
-block is inserted. Other modules retain the existing finetuning behavior.
+The example freezes the standard text encoder and decoder base weights, then
+trains low-rank updates on PEFT-supported `Conv1d` and `Linear` layers in both.
+Set `peft.decoder.enabled: false` to retain the original full decoder
+finetuning behavior. Decoder `ConvTranspose1d` and dilated `Conv1d` layers
+remain frozen in PEFT mode because PEFT does not wrap them with output-shape
+compatible LoRA branches.
 
 ### Common Issues
 [@Kreevoz](https://github.com/Kreevoz) has made detailed notes on common issues in finetuning, with suggestions in maximizing audio quality: [#81](https://github.com/yl4579/StyleTTS2/discussions/81). Some of these also apply to training from scratch. [@IIEleven11](https://github.com/IIEleven11) has also made a guideline for fine-tuning: [#128](https://github.com/yl4579/StyleTTS2/discussions/128).
