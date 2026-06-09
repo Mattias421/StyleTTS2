@@ -5,7 +5,7 @@ device: "cuda"
 epochs: 50
 batch_size: 8
 max_len: 100
-pretrained_model: "Models/ESD/epoch_2nd_00004.pth"
+pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
 second_stage_load_pretrained: true
 load_only_params: true
 
