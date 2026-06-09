@@ -1,4 +1,4 @@
-log_dir: Models/cde_dt100_hlayers/esd_small_cde_dt100_h064_l4
+log_dir: Models/cde_dt_h256_l6/esd_small_cde_dt050_h256_l6
 save_freq: 1
 log_interval: 10
 device: cuda
@@ -15,7 +15,7 @@ PLBERT_dir: Utils/PLBERT/
 data_params:
   train_data: Data/train_list_esd.txt
   val_data: Data/val_list_esd.txt
-  root_path: /store/store4/data
+  root_path: /mnt/parscratch/users/acq22mc/data
   OOD_data: Data/ref_val_list_esd.txt
   min_length: 50
 preprocess_params:
@@ -38,17 +38,17 @@ model_params:
   cde:
     enabled: true
     params:
-      hidden_channels: 64
+      hidden_channels: 256
       interpolation: linear
       solver: reversible_heun
-      num_layers: 4
+      num_layers: 6
       vf_output_activation: none
       readout_type: unet
       time_norm_mode: utterance
       time_norm_value: 1024.0
       min_duration: 0.001
       adjoint: true
-      dt: 1.0
+      dt: 0.5
       atol: 1.0e-05
       rtol: 1.0e-05
       dropout: 0.2

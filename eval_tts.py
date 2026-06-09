@@ -365,6 +365,8 @@ def main():
                 str(EVAL_DIR / "evaluate_mcd.py"),
                 str(gt_eval_dir),
                 str(gen_eval_dir),
+                "--nj",
+                str(args.nj),
             ]
             outputs["mcd"] = run_command(commands["mcd"])
 

@@ -15,7 +15,7 @@ PLBERT_dir: Utils/PLBERT/
 data_params:
   train_data: Data/train_list_esd.txt
   val_data: Data/val_list_esd.txt
-  root_path: /store/store2/data
+  root_path: /store/store4/data
   OOD_data: Data/ref_val_list_esd.txt
   min_length: 50
 preprocess_params:
