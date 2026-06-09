@@ -4,6 +4,21 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchcde
+from torch.nn.utils import weight_norm
+
+
+class ChannelLayerNorm(nn.Module):
+    def __init__(self, channels: int, eps: float = 1e-5):
+        super().__init__()
+        self.channels = int(channels)
+        self.eps = float(eps)
+        self.gamma = nn.Parameter(torch.ones(channels))
+        self.beta = nn.Parameter(torch.zeros(channels))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x.transpose(1, -1)
+        x = F.layer_norm(x, (self.channels,), self.gamma, self.beta, self.eps)
+        return x.transpose(1, -1)
 
 # by matchatts https://github.com/shivammehta25/Matcha-TTS/blob/main/matcha/models/components/decoder.py
 class Downsample1D(nn.Module):
@@ -187,6 +202,7 @@ class NeuralCDE(nn.Module):
         time_norm_mode: str = "utterance",
         time_norm_value: float = 1024.0,
         min_duration: float = 1e-3,
+        init_type: str = "unet",
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
@@ -213,6 +229,9 @@ class NeuralCDE(nn.Module):
         self.min_duration = float(min_duration)
         if self.min_duration <= 0.0:
             raise ValueError(f"Expected min_duration > 0, got {self.min_duration}")
+        if init_type not in {"unet", "reverse_lstm"}:
+            raise ValueError(f"Unknown init_type '{init_type}'")
+        self.init_type = str(init_type)
         self.adjoint = bool(adjoint)
         self.dt = float(dt)
         self.atol = float(atol)
@@ -230,13 +249,23 @@ class NeuralCDE(nn.Module):
             dropout=self.dropout,
         )
         self.init_rf = 8
-        self.initial_unet = UNet1D(
-            in_channels=self.input_channels,
-            mid_channels=self.hidden_channels,
-            out_channels=self.hidden_channels,
-            num_layers=num_layers,
-            dropout=self.dropout,
-        )
+        if self.init_type == "unet":
+            self.initial_unet = UNet1D(
+                in_channels=self.input_channels,
+                mid_channels=self.hidden_channels,
+                out_channels=self.hidden_channels,
+                num_layers=num_layers,
+                dropout=self.dropout,
+            )
+            self.initial_lstm = None
+        else:
+            self.initial_unet = None
+            self.initial_lstm = nn.LSTM(
+                input_size=self.input_channels,
+                hidden_size=self.hidden_channels,
+                num_layers=1,
+                batch_first=True,
+            )
         if self.readout_type == "unet":
             self.readout_unet = UNet1D(
                 in_channels=self.hidden_channels,
@@ -293,10 +322,10 @@ class NeuralCDE(nn.Module):
             path = self._fill_forward(path, mask_bool)
 
             if t == 1:
-                z_t = self._initial_state(path).unsqueeze(1)
+                z_t = self._initial_state(path, mask_bool).unsqueeze(1)
             else:
                 X, coeffs = self._make_interpolation(path)
-                z0 = self._initial_state(path)
+                z0 = self._initial_state(path, mask_bool)
                 t_grid = torch.arange(t, device=x.device, dtype=compute_dtype)
                 cdeint_kwargs = self._cdeint_kwargs(X, z0, t_grid, coeffs)
                 z_t = torchcde.cdeint(**cdeint_kwargs)  # (b, t, hidden)
@@ -330,7 +359,29 @@ class NeuralCDE(nn.Module):
         coeffs = torchcde.hermite_cubic_coefficients_with_backward_differences(path)
         return torchcde.CubicSpline(coeffs), coeffs
 
-    def _initial_state(self, path: torch.Tensor) -> torch.Tensor:
+    def _initial_state(
+        self, path: torch.Tensor, valid_mask: torch.Tensor | None = None
+    ) -> torch.Tensor:
+        if self.init_type == "reverse_lstm":
+            if valid_mask is None:
+                valid_mask = torch.ones(
+                    path.shape[:2], device=path.device, dtype=torch.bool
+                )
+            lengths = valid_mask.long().sum(dim=1).clamp_min(1)
+            positions = torch.arange(path.shape[1], device=path.device).unsqueeze(0)
+            reverse_idx = (lengths.unsqueeze(1) - 1 - positions).clamp_min(0)
+            reverse_idx = reverse_idx.unsqueeze(-1).expand_as(path)
+            reversed_path = path.gather(dim=1, index=reverse_idx)
+            packed = nn.utils.rnn.pack_padded_sequence(
+                reversed_path,
+                lengths.cpu(),
+                batch_first=True,
+                enforce_sorted=False,
+            )
+            self.initial_lstm.flatten_parameters()
+            _, (hidden, _) = self.initial_lstm(packed)
+            return hidden[-1]
+
         rf = min(self.init_rf, path.shape[1])
         init_x = path[:, :rf, :].transpose(1, 2)  # (b, input, rf)
         init_mask = torch.ones((path.shape[0], 1, rf), device=path.device, dtype=path.dtype)
@@ -364,3 +415,103 @@ class NeuralCDE(nn.Module):
             return self.readout_unet(z_seq, mask)  # (b, channels, length)
         y_t = self.readout_linear(z_t)  # (b, length, channels)
         return y_t.transpose(1, 2)  # (b, channels, length)
+
+class TextEncoderCDE(nn.Module):
+    """Text encoder whose convolutional features control stacked Neural CDEs."""
+
+    def __init__(
+        self,
+        channels: int,
+        kernel_size: int,
+        depth: int,
+        n_symbols: int,
+        *,
+        cde_depth: int = 2,
+        hidden_channels: int | None = None,
+        actv: nn.Module | None = None,
+        **cde_kwargs,
+    ):
+        super().__init__()
+        if cde_depth < 1:
+            raise ValueError(f"Expected cde_depth >= 1, got {cde_depth}")
+        if actv is None:
+            actv = nn.LeakyReLU(0.2)
+
+        self.embedding = nn.Embedding(n_symbols, channels)
+
+        padding = (kernel_size - 1) // 2
+        self.cnn = nn.ModuleList()
+        for _ in range(depth):
+            self.cnn.append(nn.Sequential(
+                weight_norm(nn.Conv1d(channels, channels, kernel_size=kernel_size, padding=padding)),
+                ChannelLayerNorm(channels),
+                actv,
+                nn.Dropout(0.2),
+            ))
+
+        hidden_channels = hidden_channels or channels // 2
+        cde_kwargs = dict(cde_kwargs)
+        cde_kwargs.setdefault("init_type", "reverse_lstm")
+        self.cde_layers = nn.ModuleList(
+            [
+                NeuralCDE(
+                    channels=channels,
+                    hidden_channels=hidden_channels,
+                    **cde_kwargs,
+                )
+                for _ in range(cde_depth)
+            ]
+        )
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        input_lengths: torch.Tensor,
+        m: torch.Tensor,
+        attn: torch.Tensor | None = None,
+    ) -> torch.Tensor:
+        x = self.embedding(x)  # [B, T, emb]
+        x = x.transpose(1, 2)  # [B, emb, T]
+        m = m.to(device=x.device, dtype=torch.bool)
+        if m.ndim == 2:
+            m = m.unsqueeze(1)
+        if m.ndim != 3 or m.shape[1] != 1:
+            raise ValueError(
+                f"Expected m to have shape (batch, length) or (batch, 1, length), got {tuple(m.shape)}"
+            )
+        x.masked_fill_(m, 0.0)
+
+        for c in self.cnn:
+            x = c(x)
+            x.masked_fill_(m, 0.0)
+
+        durations = self._durations_from_attention(attn, x.shape[-1])
+        valid_mask = (~m).to(dtype=x.dtype)
+        for cde_layer in self.cde_layers:
+            x = cde_layer(x, valid_mask, durations)
+        return x.masked_fill(m, 0.0)
+
+    @staticmethod
+    def _durations_from_attention(
+        attn: torch.Tensor | None, text_length: int
+    ) -> torch.Tensor | None:
+        if attn is None:
+            return None
+        if attn.ndim == 4 and attn.shape[1] == 1:
+            attn = attn[:, 0]
+        if attn.ndim != 3:
+            raise ValueError(
+                f"Expected attn to have shape (batch, text, frames), got {tuple(attn.shape)}"
+            )
+        if attn.shape[1] != text_length:
+            raise ValueError(
+                f"Attention text length {attn.shape[1]} does not match encoder length {text_length}"
+            )
+        return attn.sum(dim=-1).detach()
+
+    def inference(self, x: torch.Tensor) -> torch.Tensor:
+        lengths = torch.full(
+            (x.shape[0],), x.shape[1], device=x.device, dtype=torch.long
+        )
+        mask = torch.zeros_like(x, dtype=torch.bool)
+        return self.forward(x, lengths, mask).transpose(1, 2)
