@@ -3,7 +3,6 @@ from monotonic_align import mask_from_lens
 from monotonic_align.core import maximum_path_c
 import numpy as np
 import torch
-import copy
 from torch import nn
 import torch.nn.functional as F
 import torchaudio
@@ -71,4 +70,58 @@ def recursive_munch(d):
 def log_print(message, logger):
     logger.info(message)
     print(message)
-    
+
+
+def _merged_weight_norm_state(module):
+    """Return weight-norm parameters that reproduce the module's current weight."""
+
+    for hook in module._forward_pre_hooks.values():
+        if getattr(hook, "name", None) != "weight":
+            continue
+
+        weight = module.weight.detach()
+        return {
+            "weight_g": torch.norm_except_dim(weight, 2, hook.dim),
+            "weight_v": weight,
+        }
+    return {}
+
+
+def merged_peft_state_dict(module):
+    """Return a state dict with PEFT adapter weights merged into base layers."""
+
+    try:
+        from peft.tuners.tuners_utils import BaseTunerLayer
+    except ImportError:
+        return module.state_dict()
+
+    if not any(isinstance(submodule, BaseTunerLayer) for submodule in module.modules()):
+        return module.state_dict()
+
+    adapter_layers = [
+        submodule for submodule in module.modules()
+        if isinstance(submodule, BaseTunerLayer)
+    ]
+    try:
+        for submodule in adapter_layers:
+            submodule.merge(safe_merge=True)
+
+        weight_norm_overrides = {}
+        for name, submodule in module.named_modules():
+            if not isinstance(submodule, BaseTunerLayer):
+                continue
+            base_layer = submodule.get_base_layer()
+            prefix = f"{name}.base_layer." if name else "base_layer."
+            for key, value in _merged_weight_norm_state(base_layer).items():
+                weight_norm_overrides[prefix + key] = value
+
+        state_dict = {}
+        for key, value in module.state_dict().items():
+            if ".lora_" in key:
+                continue
+            value = weight_norm_overrides.get(key, value)
+            state_dict[key.replace(".base_layer.", ".")] = value.detach().cpu().clone()
+        return state_dict
+    finally:
+        for submodule in reversed(adapter_layers):
+            submodule.unmerge()

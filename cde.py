@@ -5,6 +5,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchcde
 
+try:
+    from peft import LoraConfig, inject_adapter_in_model
+except ImportError:  # pragma: no cover - optional dependency
+    LoraConfig = None
+    inject_adapter_in_model = None
+
 # by matchatts https://github.com/shivammehta25/Matcha-TTS/blob/main/matcha/models/components/decoder.py
 class Downsample1D(nn.Module):
     def __init__(self, dim):
@@ -364,3 +370,58 @@ class NeuralCDE(nn.Module):
             return self.readout_unet(z_seq, mask)  # (b, channels, length)
         y_t = self.readout_linear(z_t)  # (b, length, channels)
         return y_t.transpose(1, 2)  # (b, channels, length)
+
+
+def _collect_peft_target_modules(module: nn.Module) -> list[str]:
+    """Collect module names that PEFT can adapt with LoRA.
+
+    For the CDE block we adapt the learned projection and Conv1d modules, which
+    keeps the time-synchronous solve intact while reducing the number of
+    trainable parameters. ConvTranspose1d is intentionally excluded because the
+    PEFT module path is the standard convolutional LoRA implementation.
+    """
+
+    target_names: list[str] = []
+    supported_leaf_types = (
+        nn.Conv1d,
+        nn.Linear,
+    )
+    for module_name, submodule in module.named_modules():
+        if not isinstance(submodule, supported_leaf_types):
+            continue
+        if not module_name:
+            continue
+        target_names.append(module_name)
+    return target_names
+
+
+def maybe_inject_cde_lora(module: nn.Module, peft_cfg) -> nn.Module:
+    """Optionally wrap a CDE module with a PEFT LoRA adapter.
+
+    The adapter is injected in-place. When disabled, the input module is
+    returned unchanged.
+    """
+
+    if not getattr(peft_cfg, "enabled", False):
+        return module
+    if inject_adapter_in_model is None or LoraConfig is None:
+        raise ImportError(
+            "CDE PEFT adapters require the optional 'peft' dependency. Install it to enable "
+            "model_params.cde.peft.enabled."
+        )
+
+    target_modules = getattr(peft_cfg, "target_modules", None)
+    if target_modules is None or len(target_modules) == 0:
+        target_modules = _collect_peft_target_modules(module)
+    if len(target_modules) == 0:
+        raise ValueError("No PEFT target modules were found in the CDE module.")
+
+    lora_config = LoraConfig(
+        r=int(getattr(peft_cfg, "rank", 8)),
+        lora_alpha=int(getattr(peft_cfg, "alpha", 16)),
+        lora_dropout=float(getattr(peft_cfg, "dropout", 0.0)),
+        bias="none",
+        target_modules=list(target_modules),
+    )
+    adapter_name = str(getattr(peft_cfg, "adapter_name", "cde_lora"))
+    return inject_adapter_in_model(lora_config, module, adapter_name=adapter_name)

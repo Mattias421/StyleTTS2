@@ -31,8 +31,25 @@ from Modules.diffusion.sampler import DiffusionSampler, ADPM2Sampler, KarrasSche
 from optimizers import build_optimizer
 
 from accelerate import Accelerator
+from peft_adapters import inject_lora_adapter
 
 accelerator = Accelerator()
+
+
+def _module_peft_config(peft_config, module_name):
+    module_config = {
+        key: peft_config[key]
+        for key in ("rank", "alpha", "dropout")
+        if key in peft_config
+    }
+    if module_name == "text_encoder":
+        for key in ("target_modules", "adapter_name"):
+            if key in peft_config:
+                module_config[key] = peft_config[key]
+    module_config.update(peft_config.get(module_name, {}))
+    module_config.setdefault("enabled", module_name == "text_encoder")
+    return module_config
+
 
 # simple fix for dataparallel that allows access to class attributes
 class MyDataParallel(torch.nn.DataParallel):
@@ -74,6 +91,7 @@ def main(config_path):
     save_freq = config.get('save_freq', 2)
     log_interval = config.get('log_interval', 10)
     saving_epoch = config.get('save_freq', 2)
+    max_train_steps = config.get('max_train_steps')
 
     data_params = config.get('data_params', None)
     sr = config['preprocess_params'].get('sr', 24000)
@@ -141,10 +159,6 @@ def main(config_path):
     iters = 0
 
     load_pretrained = config.get('pretrained_model', '') != '' and config.get('second_stage_load_pretrained', False)
-    cde_peft_enabled = bool(
-        'cde' in model
-        and getattr(getattr(getattr(model_params, "cde", None), "peft", None), "enabled", False)
-    )
     
     if not load_pretrained:
         if config.get('first_stage_path', '') != '':
@@ -165,10 +179,11 @@ def main(config_path):
         else:
             raise ValueError('You need to specify the path to the first stage model.') 
 
-    if load_pretrained and cde_peft_enabled:
+    if load_pretrained:
         if not config.get('load_only_params', True):
-            logger.info(
-                "CDE PEFT ignores the pretrained optimizer state and loads model parameters only."
+            raise ValueError(
+                "PEFT finetuning requires load_only_params: true because the base optimizer "
+                "state does not contain adapter parameters."
             )
         model, _, start_epoch, iters = load_checkpoint(
             model,
@@ -177,9 +192,29 @@ def main(config_path):
             load_only_params=True,
         )
 
-    if cde_peft_enabled:
-        from cde import maybe_inject_cde_lora
-        model.cde.module = maybe_inject_cde_lora(model.cde.module, model_params.cde.peft).to(device)
+    peft_config = config.get('peft', {})
+    if not peft_config.get('enabled', True):
+        raise ValueError("train_finetune_accelerate_peft.py requires peft.enabled: true.")
+
+    text_encoder_config = _module_peft_config(peft_config, "text_encoder")
+    decoder_config = _module_peft_config(peft_config, "decoder")
+    if not text_encoder_config["enabled"] and not decoder_config["enabled"]:
+        raise ValueError("PEFT must be enabled for at least one of text_encoder or decoder.")
+    if text_encoder_config["enabled"]:
+        model.text_encoder.module = inject_lora_adapter(
+            model.text_encoder.module,
+            text_encoder_config,
+            label="Text encoder",
+            default_adapter_name="text_encoder_lora",
+            target_predicate=lambda name, _: name.startswith("cnn."),
+        ).to(device)
+    if decoder_config["enabled"]:
+        model.decoder.module = inject_lora_adapter(
+            model.decoder.module,
+            decoder_config,
+            label="Decoder",
+            default_adapter_name="decoder_lora",
+        ).to(device)
 
     gl = GeneratorLoss(model.mpd, model.msd).to(device)
     dl = DiscriminatorLoss(model.mpd, model.msd).to(device)
@@ -209,8 +244,6 @@ def main(config_path):
     scheduler_params_dict['bert']['max_lr'] = optimizer_params.bert_lr * 2
     scheduler_params_dict['decoder']['max_lr'] = optimizer_params.ft_lr * 2
     scheduler_params_dict['style_encoder']['max_lr'] = optimizer_params.ft_lr * 2
-    if 'cde' in model:
-        scheduler_params_dict['cde']['max_lr'] = config['optimizer_params'].get('cde_lr', optimizer_params.ft_lr) * 2
     
     optimizer = build_optimizer({key: model[key].parameters() for key in model},
                                           scheduler_params_dict=scheduler_params_dict, lr=optimizer_params.lr)
@@ -224,22 +257,13 @@ def main(config_path):
         g['weight_decay'] = 0.01
         
     # adjust acoustic module learning rate
-    acoustic_modules = ["decoder", "style_encoder"]
-    if 'cde' in model:
-        acoustic_modules.append("cde")
-    for module in acoustic_modules:
+    for module in ["decoder", "style_encoder"]:
         for g in optimizer.optimizers[module].param_groups:
             g['betas'] = (0.0, 0.99)
-            module_lr = config['optimizer_params'].get('cde_lr', optimizer_params.ft_lr) if module == "cde" else optimizer_params.ft_lr
-            g['lr'] = module_lr
-            g['initial_lr'] = module_lr
+            g['lr'] = optimizer_params.ft_lr
+            g['initial_lr'] = optimizer_params.ft_lr
             g['min_lr'] = 0
             g['weight_decay'] = 1e-4
-        
-    # load models if there is a model
-    if load_pretrained and not cde_peft_enabled:
-        model, optimizer, start_epoch, iters = load_checkpoint(model,  optimizer, config['pretrained_model'],
-                                    load_only_params=config.get('load_only_params', True))
         
     n_down = model.text_aligner.n_down
 
@@ -255,8 +279,6 @@ def main(config_path):
     
     print('BERT', optimizer.optimizers['bert'])
     print('decoder', optimizer.optimizers['decoder'])
-    if 'cde' in optimizer.optimizers:
-        print('cde', optimizer.optimizers['cde'])
 
     start_ds = False
     
@@ -276,6 +298,7 @@ def main(config_path):
     )
 
     for epoch in range(start_epoch, epochs):
+        reached_max_train_steps = False
         running_loss = 0
         start_time = time.time()
 
@@ -283,8 +306,6 @@ def main(config_path):
         
         model.text_aligner.train()
         model.text_encoder.train()
-        if 'cde' in model:
-            model.cde.train()
         
         model.predictor.train()
         model.bert_encoder.train()
@@ -320,10 +341,6 @@ def main(config_path):
 
             # encode
             t_en = model.text_encoder(texts, input_lengths, text_mask)
-            if 'cde' in model:
-                cde_durations = s2s_attn_mono.sum(axis=-1).detach()
-                cde_mask = (~text_mask).unsqueeze(1).float()
-                t_en = model.cde(t_en, cde_mask, cde_durations)
             
             # 50% of chance of using monotonic version
             if bool(random.getrandbits(1)):
@@ -508,8 +525,6 @@ def main(config_path):
             optimizer.step('decoder')
             
             optimizer.step('text_encoder')
-            if 'cde' in model:
-                optimizer.step('cde')
             optimizer.step('text_aligner')
             
             if epoch >= diff_epoch:
@@ -583,6 +598,10 @@ def main(config_path):
                         optimizer.step('wd')
 
             iters = iters + 1
+            if max_train_steps is not None and iters >= int(max_train_steps):
+                logger.info('Reached max_train_steps=%d; running smoke validation and checkpoint export.', max_train_steps)
+                reached_max_train_steps = True
+                break
             
             if (i+1)%log_interval == 0:
                 logger.info ('Epoch [%d/%d], Step [%d/%d], Loss: %.5f, Disc Loss: %.5f, Dur Loss: %.5f, CE Loss: %.5f, Norm Loss: %.5f, F0 Loss: %.5f, LM Loss: %.5f, Gen Loss: %.5f, Sty Loss: %.5f, Diff Loss: %.5f, DiscLM Loss: %.5f, GenLM Loss: %.5f, SLoss: %.5f, S2S Loss: %.5f, Mono Loss: %.5f'
@@ -633,10 +652,6 @@ def main(config_path):
 
                         # encode
                         t_en = model.text_encoder(texts, input_lengths, text_mask)
-                        if 'cde' in model:
-                            cde_durations = s2s_attn_mono.sum(axis=-1).detach()
-                            cde_mask = (~text_mask).unsqueeze(1).float()
-                            t_en = model.cde(t_en, cde_mask, cde_durations)
                         asr = (t_en @ s2s_attn_mono)
 
                         d_gt = s2s_attn_mono.sum(axis=-1).detach()
@@ -728,7 +743,7 @@ def main(config_path):
         writer.add_scalar('eval/F0_loss', loss_f / iters_test, epoch + 1)
         
         
-        if (epoch + 1) % save_freq == 0 :
+        if reached_max_train_steps or (epoch + 1) % save_freq == 0:
             if (loss_test / iters_test) < best_loss:
                 best_loss = loss_test / iters_test
             print('Saving..')
@@ -748,6 +763,10 @@ def main(config_path):
 
                 with open(osp.join(log_dir, osp.basename(config_path)), 'w') as outfile:
                     yaml.dump(config, outfile, default_flow_style=True)
+
+        if reached_max_train_steps:
+            writer.close()
+            return
 
                             
 if __name__=="__main__":
