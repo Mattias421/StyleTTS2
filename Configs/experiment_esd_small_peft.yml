@@ -30,7 +30,7 @@ preprocess_params:
 
 peft:
   enabled: true
-  rank: 8
+  rank: 64
   alpha: 16
   dropout: 0.0
   text_encoder:
