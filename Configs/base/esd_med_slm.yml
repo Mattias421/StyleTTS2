@@ -2,12 +2,12 @@ log_dir: "Models/ESD_medium"
 save_freq: 1
 log_interval: 10
 device: "cuda"
-epochs: 2 # use SLM for epoch 4+
+epochs: 5 # use SLM for epoch 4+
 batch_size: 2
 max_len: 400
 pretrained_model: "Models/ESD_medium/epoch_2nd_00002.pth"
 second_stage_load_pretrained: true
-load_only_params: true
+load_only_params: false
 
 F0_path: "Utils/JDC/bst.t7"
 ASR_config: "Utils/ASR/config.yml"
