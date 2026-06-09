@@ -277,8 +277,9 @@ def run_command(command):
 
 def summarize_log_f0_output(output):
     for line in reversed(output.splitlines()):
-        if line.startswith("Average:"):
-            return line + "\n"
+        average_at = line.find("Average:")
+        if average_at != -1:
+            return line[average_at:] + "\n"
     return output
 
 
@@ -365,6 +366,8 @@ def main():
                 str(EVAL_DIR / "evaluate_mcd.py"),
                 str(gt_eval_dir),
                 str(gen_eval_dir),
+                "--nj",
+                str(args.nj),
             ]
             outputs["mcd"] = run_command(commands["mcd"])
 

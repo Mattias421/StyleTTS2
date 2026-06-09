@@ -1,4 +1,5 @@
-import sys,os,torch,numpy,soundfile,pysptk
+import argparse, os, sys, torch, numpy, soundfile, pysptk
+from multiprocessing import Pool
 from scipy import spatial
 from fastdtw import fastdtw
 
@@ -66,53 +67,68 @@ def _get_best_mcep_params(fs: int):
     else:
         raise ValueError(f"Not found the setting for {fs}.")
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Evaluate mel-cepstral distortion.")
+    parser.add_argument("ref_dir")
+    parser.add_argument("hyp_dir")
+    parser.add_argument("--nj", type=int, default=int(os.environ.get("EVAL_MCD_NJ", 16)))
+    return parser.parse_args()
+
+
+def calculate_mcd(job):
+    f, ref_dir, hyp_dir = job
+    n, e = os.path.splitext(f)
+    g = os.path.join(hyp_dir, n + e)
+    if not os.path.exists(g):
+        raise ValueError("File not found: " + g)
+    gen_x, gen_fs = soundfile.read(g, dtype="float64")
+    gt_x, gt_fs = soundfile.read(os.path.join(ref_dir, f), dtype="float64")
+    if gen_fs != gt_fs:
+        raise ValueError("Sampling rate mismatch")
+    fs = gen_fs
+    #r=torch.load(os.path.join(ref_dir,f)).t().detach().numpy()
+    #h=torch.load(g).detach().numpy()
+    gen_mcep = sptk_extract(
+            x=gen_x,
+            fs=fs,
+            n_fft=1024, #args.n_fft,
+            n_shift=256, #args.n_shift,
+            mcep_dim=None, #args.mcep_dim,
+            mcep_alpha=None, #args.mcep_alpha,
+    )
+    gt_mcep = sptk_extract(
+            x=gt_x,
+            fs=fs,
+            n_fft=1024,
+            n_shift=256,
+            mcep_dim=None, #args.mcep_dim,
+            mcep_alpha=None, #args.mcep_alpha,
+    )
+    # DTW (below from espnet)
+    _, path = fastdtw(gen_mcep, gt_mcep, dist=spatial.distance.euclidean)
+    twf = numpy.array(path).T
+    h_dtw = gen_mcep[twf[0]]
+    r_dtw = gt_mcep[twf[1]]
+
+    # MCD
+    diff2sum = numpy.sum((h_dtw-r_dtw)**2, 1)
+    mcd = numpy.mean(10.0/numpy.log(10.0)*numpy.sqrt(2*diff2sum), 0)
+    #print(n,mcd)
+    return n, mcd
+
+
 def main():
+    args = parse_args()
 
-    if len(sys.argv)!=3:
-        print("Usage: python",sys.argv[0],"ref-pt-dir hyp-pt-dir")
-        exit(100)
+    files = [f for f in os.listdir(args.ref_dir) if os.path.splitext(f)[1] == ".wav"]
+    jobs = [(f, args.ref_dir, args.hyp_dir) for f in files]
+    if args.nj > 1:
+        with Pool(processes=args.nj) as pool:
+            results = list(pool.imap_unordered(calculate_mcd, jobs))
+    else:
+        results = [calculate_mcd(job) for job in jobs]
 
-    D=[]
-    F=[]
-    for f in os.listdir(sys.argv[1]):
-        n,e=os.path.splitext(f)
-        if e!=".wav": continue
-        F.append(n)
-        g=os.path.join(sys.argv[2],n+e)
-        if not os.path.exists(g): raise ValueError("File not found: "+g)
-        gen_x, gen_fs = soundfile.read(g, dtype="float64")
-        gt_x, gt_fs = soundfile.read(os.path.join(sys.argv[1],f), dtype="float64")
-        if gen_fs != gt_fs: raise ValueError("Sampling rate mismatch")
-        fs=gen_fs
-        #r=torch.load(os.path.join(sys.argv[1],f)).t().detach().numpy()
-        #h=torch.load(g).detach().numpy()
-        gen_mcep = sptk_extract(
-                x=gen_x,
-                fs=fs,
-                n_fft=1024, #args.n_fft,
-                n_shift=256, #args.n_shift,
-                mcep_dim=None, #args.mcep_dim,
-                mcep_alpha=None, #args.mcep_alpha,
-        )
-        gt_mcep = sptk_extract(
-                x=gt_x,
-                fs=fs,
-                n_fft=1024,
-                n_shift=256,
-                mcep_dim=None, #args.mcep_dim,
-                mcep_alpha=None, #args.mcep_alpha,
-        )
-        # DTW (below from espnet)
-        _,path=fastdtw(gen_mcep,gt_mcep,dist=spatial.distance.euclidean)
-        twf=numpy.array(path).T
-        h_dtw=gen_mcep[twf[0]]
-        r_dtw=gt_mcep[twf[1]]
-
-        # MCD
-        diff2sum=numpy.sum((h_dtw-r_dtw)**2,1)
-        mcd=numpy.mean(10.0/numpy.log(10.0)*numpy.sqrt(2*diff2sum),0)
-        #print(n,mcd)
-        D.append(mcd)
+    F, D = zip(*results)
 
     D=numpy.array(D)
     mean_mcd=numpy.mean(D)
@@ -129,11 +145,11 @@ def main():
     print(F[-2],D[-2])
     print(F[-3],D[-3])
 
-    with open(sys.argv[2]+"/utt2mcd.log",mode='w') as w:
+    with open(args.hyp_dir+"/utt2mcd.log",mode='w') as w:
         for i in range(len(F)):
             w.write(F[i]+" "+str(float(D[i]))+"\n")
 
-    with open(sys.argv[2]+"/evaluation_results.txt", "w") as f:
+    with open(args.hyp_dir+"/evaluation_results.txt", "w") as f:
         f.write(f"#utterances: {len(F)}\n")
         f.write(f"Average: {mean_mcd:.4f} ± {std_mcd:.4f}")
 

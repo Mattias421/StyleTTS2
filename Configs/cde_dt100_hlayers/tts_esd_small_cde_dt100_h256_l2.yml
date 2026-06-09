@@ -1,0 +1,15 @@
+model_config: Models/cde_dt100_hlayers/esd_small_cde_dt100_h256_l2/esd_small_cde_dt100_h256_l2.yml
+checkpoint: Models/cde_dt100_hlayers/esd_small_cde_dt100_h256_l2/epoch_2nd_00004.pth
+root_path: /store/store2/data
+split: val
+text_list: Data/val_list_esd.txt
+ref_list: Data/ref_val_list_esd.txt
+output_dir: Models/cde_dt100_hlayers/esd_small_cde_dt100_h256_l2/samples
+device: cuda
+
+sample_rate: 24000
+alpha: 0.3
+beta: 0.7
+diffusion_steps: 5
+embedding_scale: 1.0
+seed: 0
