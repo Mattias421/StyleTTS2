@@ -79,8 +79,18 @@ class FilePathDataset(torch.utils.data.Dataset):
         spect_params = SPECT_PARAMS
         mel_params = MEL_PARAMS
 
-        _data_list = [l.strip().split('|') for l in data_list]
-        self.data_list = [data if len(data) == 3 else (*data, 0) for data in _data_list]
+        _data_list = []
+        for line in data_list:
+            line = line.strip()
+            if not line:
+                continue
+            parts = line.split('|')
+            if len(parts) != 3:
+                raise ValueError(
+                    f"Expected wav|text|speaker_id but got {len(parts)} fields: {line!r}"
+                )
+            _data_list.append(parts)
+        self.data_list = _data_list
         self.text_cleaner = TextCleaner()
         self.sr = sr
 
@@ -136,6 +146,7 @@ class FilePathDataset(torch.utils.data.Dataset):
         return speaker_id, acoustic_feature, text_tensor, ref_text, ref_mel_tensor, ref_label, path, wave
 
     def _load_tensor(self, data):
+        print(data)
         wave_path, text, speaker_id = data
         speaker_id = int(speaker_id)
         wave, sr = sf.read(osp.join(self.root_path, wave_path))
@@ -252,4 +263,3 @@ def build_dataloader(path_list,
                              pin_memory=(device != 'cpu'))
 
     return data_loader
-
