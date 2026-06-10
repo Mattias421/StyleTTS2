@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import torch
+from torch._functorch.autograd_function import generate_single_level_function
 import torch.nn as nn
 import torch.nn.functional as F
 import torchcde
@@ -278,6 +279,9 @@ class NeuralCDE(nn.Module):
             self.readout_unet = None
             self.readout_linear = nn.Linear(self.hidden_channels, self.channels)
 
+        gate_init = 3.0
+        self.gate_logit = nn.Parameter(torch.tensor(gate_init))
+
     def forward(
         self, x: torch.Tensor, mask: torch.Tensor, durations: torch.Tensor | None = None
     ) -> torch.Tensor:
@@ -331,6 +335,8 @@ class NeuralCDE(nn.Module):
 
             y = self._readout(z_t, mask_bool)
         y = y.to(dtype=out_dtype)
+        gate = torch.sigmoid(self.gate_logit)
+        y = x + gate * y
         return y * mask.to(dtype=out_dtype)
 
     def _phone_start_times(self, durations: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
