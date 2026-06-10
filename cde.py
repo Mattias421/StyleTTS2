@@ -176,6 +176,245 @@ class CDEFunc(torch.nn.Module):
             vf = vf.tanh()
         return vf.to(input_dtype)
 
+class NeuralCDE(nn.Module):
+    """Neural CDE block for token sequences.
+
+    This module is shaped to match the rest of Matcha's text-side components:
+    it consumes an encoder sequence `(B, C, L)` along with a `(B, 1, L)` mask and
+    per-token durations `(B, L)`/`(B, 1, L)`, and returns `(B, C, L)`.
+
+    Phone timing is represented as an extra control-path channel. The CDE
+    itself is solved on a shared index-space grid so the whole batch can be
+    integrated in one call.
+    """
+
+    def __init__(
+        self,
+        channels: int,
+        hidden_channels: int,
+        *,
+        interpolation: str = "linear",
+        solver: str = "rk4",
+        num_layers: int = 2,
+        vf_output_activation: str = "none",
+        readout_type: str = "unet",
+        time_norm_mode: str = "utterance",
+        time_norm_value: float = 1024.0,
+        min_duration: float = 1e-3,
+        init_type: str = "unet",
+        adjoint: bool = True,
+        dt: float = 0.01,
+        atol: float = 1e-5,
+        rtol: float = 1e-5,
+        dropout: float = 0.0,
+    ):
+        super().__init__()
+        if interpolation not in {"linear", "cubic"}:
+            raise ValueError(f"Unknown interpolation '{interpolation}'")
+        self.channels = int(channels)
+        self.hidden_channels = int(hidden_channels)
+
+        self.interpolation = interpolation
+        self.solver = solver
+        if readout_type not in {"unet", "linear"}:
+            raise ValueError(f"Unknown readout_type '{readout_type}'")
+        self.readout_type = str(readout_type)
+        if time_norm_mode not in {"utterance", "global"}:
+            raise ValueError(f"Unknown time_norm_mode '{time_norm_mode}'")
+        self.time_norm_mode = str(time_norm_mode)
+        self.time_norm_value = float(time_norm_value)
+        if self.time_norm_mode == "global" and self.time_norm_value <= 0.0:
+            raise ValueError(f"Expected time_norm_value > 0 for global mode, got {self.time_norm_value}")
+        self.min_duration = float(min_duration)
+        if self.min_duration <= 0.0:
+            raise ValueError(f"Expected min_duration > 0, got {self.min_duration}")
+        if init_type not in {"unet", "reverse_lstm"}:
+            raise ValueError(f"Unknown init_type '{init_type}'")
+        self.init_type = str(init_type)
+        self.adjoint = bool(adjoint)
+        self.dt = float(dt)
+        self.atol = float(atol)
+        self.rtol = float(rtol)
+        self.dropout = float(dropout)
+        if not 0.0 <= self.dropout < 1.0:
+            raise ValueError(f"Expected dropout in [0, 1), got {self.dropout}")
+
+        self.input_channels = self.channels + 1
+        self.func = CDEFunc(
+            self.input_channels,
+            self.hidden_channels,
+            num_layers=num_layers,
+            output_activation=vf_output_activation,
+            dropout=self.dropout,
+        )
+        self.init_rf = 8
+        if self.init_type == "unet":
+            self.initial_unet = UNet1D(
+                in_channels=self.input_channels,
+                mid_channels=self.hidden_channels,
+                out_channels=self.hidden_channels,
+                num_layers=num_layers,
+                dropout=self.dropout,
+            )
+            self.initial_lstm = None
+        else:
+            self.initial_unet = None
+            self.initial_lstm = nn.LSTM(
+                input_size=self.input_channels,
+                hidden_size=self.hidden_channels,
+                num_layers=1,
+                batch_first=True,
+            )
+        if self.readout_type == "unet":
+            self.readout_unet = UNet1D(
+                in_channels=self.hidden_channels,
+                mid_channels=self.hidden_channels,
+                out_channels=self.channels,
+                num_layers=num_layers,
+                dropout=self.dropout,
+            )
+            self.readout_linear = None
+        else:
+            self.readout_unet = None
+            self.readout_linear = nn.Linear(self.hidden_channels, self.channels)
+
+    def forward(
+        self, x: torch.Tensor, mask: torch.Tensor, durations: torch.Tensor | None = None
+    ) -> torch.Tensor:
+        if x.ndim != 3:
+            raise ValueError(
+                f"Expected x to have shape (batch, channels, length), got {tuple(x.shape)}"
+            )
+        if mask.ndim != 3:
+            raise ValueError(
+                f"Expected mask to have shape (batch, 1, length), got {tuple(mask.shape)}"
+            )
+
+        b, c, t = x.shape
+        if c != self.channels:
+            raise ValueError(f"Expected x with {self.channels} channels, got {c}")
+
+        out_dtype = x.dtype
+        compute_dtype = torch.float32
+        mask_bool = mask[:, 0, :].bool()
+        x_t = x.transpose(1, 2).to(dtype=compute_dtype)  # (b, t, c)
+
+        if durations is None:
+            durations = torch.ones((b, t), device=x.device, dtype=compute_dtype)
+        else:
+            if durations.ndim == 3:
+                durations = durations[:, 0, :]
+            if durations.ndim != 2:
+                raise ValueError(
+                    f"Expected durations to have shape (batch, length) or (batch, 1, length)"
+                )
+            durations = durations.to(device=x.device, dtype=compute_dtype)
+
+        autocast_ctx = (
+            torch.autocast(device_type="cuda", enabled=False)
+            if x.is_cuda
+            else torch.autocast(device_type="cpu", enabled=False)
+        )
+        with autocast_ctx:
+            starts = self._phone_start_times(durations, mask_bool)
+            path = torch.cat([x_t, starts.unsqueeze(-1)], dim=-1)
+            path = self._fill_forward(path, mask_bool)
+
+            if t == 1:
+                z_t = self._initial_state(path, mask_bool).unsqueeze(1)
+            else:
+                X, coeffs = self._make_interpolation(path)
+                z0 = self._initial_state(path, mask_bool)
+                t_grid = torch.arange(t, device=x.device, dtype=compute_dtype)
+                cdeint_kwargs = self._cdeint_kwargs(X, z0, t_grid, coeffs)
+                z_t = torchcde.cdeint(**cdeint_kwargs)  # (b, t, hidden)
+
+            y = self._readout(z_t, mask_bool)
+        y = y.to(dtype=out_dtype)
+        return y * mask.to(dtype=out_dtype)
+
+    def _phone_start_times(self, durations: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
+        durations = durations.clamp_min(self.min_duration) * valid_mask.to(dtype=durations.dtype)
+        starts = torch.cat(
+            [durations.new_zeros(durations.shape[0], 1), torch.cumsum(durations[:, :-1], dim=1)],
+            dim=1,
+        )
+        if self.time_norm_mode == "utterance":
+            denom = durations.sum(dim=1, keepdim=True).clamp_min(1.0)
+        else:
+            denom = durations.new_tensor(self.time_norm_value)
+        return starts / denom
+
+    def _fill_forward(self, path: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
+        lengths = valid_mask.long().sum(dim=1).clamp_min(1)
+        final_idx = (lengths - 1).view(-1, 1, 1).expand(-1, 1, path.shape[-1])
+        final_values = path.gather(dim=1, index=final_idx)
+        return torch.where(valid_mask.unsqueeze(-1), path, final_values.expand_as(path))
+
+    def _make_interpolation(self, path: torch.Tensor):
+        if self.interpolation == "linear":
+            coeffs = torchcde.linear_interpolation_coeffs(path)
+            return torchcde.LinearInterpolation(coeffs), coeffs
+        coeffs = torchcde.hermite_cubic_coefficients_with_backward_differences(path)
+        return torchcde.CubicSpline(coeffs), coeffs
+
+    def _initial_state(
+        self, path: torch.Tensor, valid_mask: torch.Tensor | None = None
+    ) -> torch.Tensor:
+        if self.init_type == "reverse_lstm":
+            if valid_mask is None:
+                valid_mask = torch.ones(
+                    path.shape[:2], device=path.device, dtype=torch.bool
+                )
+            lengths = valid_mask.long().sum(dim=1).clamp_min(1)
+            positions = torch.arange(path.shape[1], device=path.device).unsqueeze(0)
+            reverse_idx = (lengths.unsqueeze(1) - 1 - positions).clamp_min(0)
+            reverse_idx = reverse_idx.unsqueeze(-1).expand_as(path)
+            reversed_path = path.gather(dim=1, index=reverse_idx)
+            packed = nn.utils.rnn.pack_padded_sequence(
+                reversed_path,
+                lengths.cpu(),
+                batch_first=True,
+                enforce_sorted=False,
+            )
+            self.initial_lstm.flatten_parameters()
+            _, (hidden, _) = self.initial_lstm(packed)
+            return hidden[-1]
+
+        rf = min(self.init_rf, path.shape[1])
+        init_x = path[:, :rf, :].transpose(1, 2)  # (b, input, rf)
+        init_mask = torch.ones((path.shape[0], 1, rf), device=path.device, dtype=path.dtype)
+        init_feats = self.initial_unet(init_x, init_mask)  # (b, hidden, rf)
+        return init_feats[:, :, -1]  # (b, hidden)
+
+    def _cdeint_kwargs(self, X, z0: torch.Tensor, t_grid: torch.Tensor, coeffs: torch.Tensor):
+        cdeint_kwargs = dict(
+            X=X,
+            z0=z0,
+            func=self.func,
+            t=t_grid,
+            adjoint=self.adjoint,
+            method=self.solver,
+            atol=self.atol,
+            rtol=self.rtol,
+        )
+        if self.adjoint:
+            cdeint_kwargs["adjoint_params"] = tuple(self.func.parameters()) + (coeffs,)
+        if self.solver == "reversible_heun":
+            cdeint_kwargs["backend"] = "torchsde"
+            cdeint_kwargs["dt"] = self.dt
+        else:
+            cdeint_kwargs["options"] = {"step_size": self.dt}
+        return cdeint_kwargs
+
+    def _readout(self, z_t: torch.Tensor, valid_mask: torch.Tensor) -> torch.Tensor:
+        if self.readout_type == "unet":
+            z_seq = z_t.transpose(1, 2)  # (b, hidden, length)
+            mask = valid_mask.unsqueeze(1).to(device=z_seq.device, dtype=z_seq.dtype)
+            return self.readout_unet(z_seq, mask)  # (b, channels, length)
+        y_t = self.readout_linear(z_t)  # (b, length, channels)
+        return y_t.transpose(1, 2)  # (b, channels, length)
+
 class StackedCDEFunc(nn.Module):
     """Vector field for a stack of CDE layers solved in one cdeint call.
 
@@ -276,7 +515,7 @@ class StackedCDEFunc(nn.Module):
         #   (B, total_hidden, input_channels)
         return torch.cat(effective_vfs, dim=-2)
 
-class NeuralCDE(nn.Module):
+class StackedNeuralCDE(nn.Module):
     """Multilayer Neural CDE block for token sequences.
 
     Consumes:
@@ -297,7 +536,7 @@ class NeuralCDE(nn.Module):
         channels: int,
         hidden_channels: int,
         *,
-        num_cde_layers: int = 2,
+        num_cde_layers: int = 1,
         interpolation: str = "linear",
         solver: str = "rk4",
         num_layers: int = 2,
@@ -306,7 +545,7 @@ class NeuralCDE(nn.Module):
         time_norm_mode: str = "utterance",
         time_norm_value: float = 1024.0,
         min_duration: float = 1e-3,
-        init_type: str = "reverse_lstm",
+        init_type: str = "unet",
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
@@ -353,10 +592,9 @@ class NeuralCDE(nn.Module):
 
         self.input_channels = self.channels + 1
 
-        self.func = StackedCDEFunc(
+        self.func = CDEFunc(
             input_channels=self.input_channels,
             hidden_channels=self.hidden_channels,
-            num_cde_layers=self.num_cde_layers,
             num_layers=num_layers,
             output_activation=vf_output_activation,
             dropout=self.dropout,
