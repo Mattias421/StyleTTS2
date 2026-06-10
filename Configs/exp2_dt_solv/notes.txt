@@ -1,0 +1,9 @@
+This xp uses the new text encoder cde, with lstm init layer, 2 neural cde's stacked (inefficiently, as it's possible to solve two layers in the same solver if desired). 
+
+Think about:
+- Using better cde stacking
+- is 5 epochs enough
+- when should diffusion epochs start
+- is the quality good
+- does parameter invariance truly hold? I think for this paper I'll assume so as it saves a lot of time.
+- Should the postnet Unet work before or after upsampling?
