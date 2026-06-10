@@ -269,6 +269,9 @@ def inference(
         duration = torch.sigmoid(duration).sum(axis=-1)
         pred_dur = torch.round(duration.squeeze()).clamp(min=1)
 
+        print(pred_dur)
+        print(pred_dur.sum())
+        print(pred_dur.sum().data)
         pred_aln_trg = torch.zeros(input_lengths, int(pred_dur.sum().data), device=device)
         c_frame = 0
         for i in range(pred_aln_trg.size(0)):
