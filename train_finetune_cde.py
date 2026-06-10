@@ -257,6 +257,7 @@ def main(config_path):
         model.text_aligner.train()
         model.text_encoder.train()
         if 'cde' in model:
+            print(model.cde)
             model.cde.train()
         
         model.predictor.train()
