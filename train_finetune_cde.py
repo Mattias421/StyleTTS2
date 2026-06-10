@@ -205,7 +205,7 @@ def main(config_path):
         acoustic_modules.append("cde")
     for module in acoustic_modules:
         for g in optimizer.optimizers[module].param_groups:
-            g['betas'] = (0.0, 0.99)
+            g['betas'] = (0.9, 0.99) if module == "cde" else (0.0, 0.99)
             module_lr = config['optimizer_params'].get('cde_lr', optimizer_params.ft_lr) if module == "cde" else optimizer_params.ft_lr
             g['lr'] = module_lr
             g['initial_lr'] = module_lr
