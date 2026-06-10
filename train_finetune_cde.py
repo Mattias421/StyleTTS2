@@ -549,6 +549,8 @@ def main(config_path):
                     optimizer.step('bert')
                     optimizer.step('predictor')
                     optimizer.step('diffusion')
+                    if 'cde' in model:
+                        optimizer.step('cde')
 
                     # SLM discriminator loss
                     if d_loss_slm != 0:
