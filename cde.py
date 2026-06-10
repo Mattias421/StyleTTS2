@@ -202,7 +202,7 @@ class NeuralCDE(nn.Module):
         time_norm_mode: str = "utterance",
         time_norm_value: float = 1024.0,
         min_duration: float = 1e-3,
-        init_type: str = "unet",
+        init_type: str = "reverse_lstm",
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
