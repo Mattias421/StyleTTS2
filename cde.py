@@ -306,7 +306,7 @@ class NeuralCDE(nn.Module):
         time_norm_mode: str = "utterance",
         time_norm_value: float = 1024.0,
         min_duration: float = 1e-3,
-        init_type: str = "unet",
+        init_type: str = "reverse_lstm",
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
@@ -668,16 +668,11 @@ class TextEncoderCDE(nn.Module):
         hidden_channels = hidden_channels or channels // 2
         cde_kwargs = dict(cde_kwargs)
         cde_kwargs.setdefault("init_type", "reverse_lstm")
-        self.cde_layers = nn.ModuleList(
-            [
-                NeuralCDE(
+        self.cde_layer = NeuralCDE(
                     channels=channels,
                     hidden_channels=hidden_channels,
                     **cde_kwargs,
                 )
-                for _ in range(cde_depth)
-            ]
-        )
 
     def forward(
         self,
@@ -703,8 +698,7 @@ class TextEncoderCDE(nn.Module):
 
         durations = self._durations_from_attention(attn, x.shape[-1])
         valid_mask = (~m).to(dtype=x.dtype)
-        for cde_layer in self.cde_layers:
-            x = cde_layer(x, valid_mask, durations)
+        x = cde_layer(x, valid_mask, durations)
         return x.masked_fill(m, 0.0)
 
     @staticmethod
