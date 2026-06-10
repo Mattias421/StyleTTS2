@@ -285,6 +285,11 @@ def inference(
 
         f0_pred, n_pred = model.predictor.F0Ntrain(en, s)
 
+        if 'cde' in model:
+            cde_durations = pred_aln_trg.sum(axis=-1).detach()[None,:]
+            cde_mask = (~text_mask).unsqueeze(1).float()
+            t_en = model.cde(t_en, cde_mask, cde_durations)
+
         asr = t_en @ pred_aln_trg.unsqueeze(0)
         if model_params.decoder.type == "hifigan":
             asr_new = torch.zeros_like(asr)
