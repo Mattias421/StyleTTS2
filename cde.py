@@ -598,9 +598,10 @@ class NeuralCDE(nn.Module):
 
         self.input_channels = self.channels + 1
 
-        self.func = CDEFunc(
+        self.func = StackedCDEFunc(
             input_channels=self.input_channels,
             hidden_channels=self.hidden_channels,
+            num_cde_layers=self.num_cde_layers,
             num_layers=num_layers,
             output_activation=vf_output_activation,
             dropout=self.dropout,
@@ -917,6 +918,7 @@ class TextEncoderCDE(nn.Module):
         hidden_channels = hidden_channels or channels // 2
         cde_kwargs = dict(cde_kwargs)
         cde_kwargs.setdefault("init_type", "reverse_lstm")
+        cde_kwargs["num_cde_layers"] = cde_depth
         self.cde_layer = NeuralCDE(
                     channels=channels,
                     hidden_channels=hidden_channels,
@@ -947,7 +949,7 @@ class TextEncoderCDE(nn.Module):
 
         durations = self._durations_from_attention(attn, x.shape[-1])
         valid_mask = (~m).to(dtype=x.dtype)
-        x = cde_layer(x, valid_mask, durations)
+        x = self.cde_layer(x, valid_mask, durations)
         return x.masked_fill(m, 0.0)
 
     @staticmethod

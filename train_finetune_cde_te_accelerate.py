@@ -137,7 +137,11 @@ def main(config_path):
         text_encoder_cde = dict(getattr(cde_config, 'params', {}))
     else:
         text_encoder_cde = dict(text_encoder_cde)
-    text_encoder_cde.setdefault('cde_depth', 2)
+    text_encoder_cde['cde_depth'] = getattr(
+        model_params,
+        'n_cde_layers',
+        text_encoder_cde.pop('num_cde_layers', text_encoder_cde.get('cde_depth', 2)),
+    )
     model.text_encoder = TextEncoderCDE(
         channels=model_params.hidden_dim,
         kernel_size=5,

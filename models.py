@@ -641,7 +641,17 @@ def build_model(args, text_aligner, pitch_extractor, bert):
     cde = None
     if getattr(getattr(args, "cde", None), "enabled", False):
         from cde import NeuralCDE
-        cde = NeuralCDE(channels=args.hidden_dim, **args.cde.params)
+        cde_kwargs = dict(args.cde.params)
+        num_cde_layers = getattr(
+            args,
+            "n_cde_layers",
+            cde_kwargs.pop("num_cde_layers", 2),
+        )
+        cde = NeuralCDE(
+            channels=args.hidden_dim,
+            num_cde_layers=num_cde_layers,
+            **cde_kwargs,
+        )
         
     # define diffusion model
     if args.multispeaker:
