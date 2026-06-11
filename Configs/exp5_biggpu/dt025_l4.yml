@@ -1,13 +1,13 @@
-log_dir: "Models/ESD_large_slm"
+log_dir: "Models/exp5_biggpu/dt025_l4"
 save_freq: 1
 log_interval: 10
 device: "cuda"
-epochs: 5
-batch_size: 4
+epochs: 3 # use SLM for epoch 4+
+batch_size: 6
 max_len: 800
-pretrained_model: "Models/ESD_large/epoch_2nd_00002.pth"
+pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
 second_stage_load_pretrained: true
-load_only_params: false
+load_only_params: true
 
 F0_path: "Utils/JDC/bst.t7"
 ASR_config: "Utils/ASR/config.yml"
@@ -18,7 +18,7 @@ data_params:
   train_data: "Data/train_list_esd.txt"
   val_data: "Data/val_list_esd.txt"
   root_path: "/mnt/parscratch/users/acq22mc/data"
-  OOD_data: "Data/ref_val_list_esd.txt"
+  OOD_data: "Data/OOD_texts.txt"
   min_length: 50
 
 preprocess_params:
@@ -39,6 +39,24 @@ model_params:
   max_dur: 50
   style_dim: 128
   dropout: 0.2
+  cde:
+    enabled: true
+    params:
+      num_cde_layers: 4
+      hidden_channels: 128
+      interpolation: linear
+      solver: rk4
+      num_layers: 2
+      vf_output_activation: none
+      readout_type: unet
+      time_norm_mode: utterance
+      time_norm_value: 1024.0
+      min_duration: 0.001
+      adjoint: true
+      dt: 0.25
+      atol: 1.0e-05
+      rtol: 1.0e-05
+      dropout: 0.2
 
   decoder:
     type: "hifigan"

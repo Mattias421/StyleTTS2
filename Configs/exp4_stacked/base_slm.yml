@@ -1,11 +1,11 @@
-log_dir: "Models/ESD_large_slm"
+log_dir: "Models/exp4_stacked/base"
 save_freq: 1
 log_interval: 10
 device: "cuda"
 epochs: 5
-batch_size: 4
-max_len: 800
-pretrained_model: "Models/ESD_large/epoch_2nd_00002.pth"
+batch_size: 2
+max_len: 175
+pretrained_model: "Models/exp4_stacked/base/epoch_2nd_00002.pth"
 second_stage_load_pretrained: true
 load_only_params: false
 
@@ -17,8 +17,8 @@ PLBERT_dir: "Utils/PLBERT/"
 data_params:
   train_data: "Data/train_list_esd.txt"
   val_data: "Data/val_list_esd.txt"
-  root_path: "/mnt/parscratch/users/acq22mc/data"
-  OOD_data: "Data/ref_val_list_esd.txt"
+  root_path: "/store/store2/data"
+  OOD_data: "Data/OOD_texts.txt"
   min_length: 50
 
 preprocess_params:

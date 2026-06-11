@@ -1,4 +1,4 @@
-log_dir: "Models/exp4_stacked/dt010"
+log_dir: "Models/exp4_stacked/dt010_slm"
 save_freq: 1
 log_interval: 10
 device: "cuda"
