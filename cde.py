@@ -177,7 +177,7 @@ class CDEFunc(torch.nn.Module):
             vf = vf.tanh()
         return vf.to(input_dtype)
 
-class NeuralCDE(nn.Module):
+class SingleNeuralCDE(nn.Module):
     """Neural CDE block for token sequences.
 
     This module is shaped to match the rest of Matcha's text-side components:
@@ -521,7 +521,7 @@ class StackedCDEFunc(nn.Module):
         #   (B, total_hidden, input_channels)
         return torch.cat(effective_vfs, dim=-2)
 
-class StackedNeuralCDE(nn.Module):
+class NeuralCDE(nn.Module):
     """Multilayer Neural CDE block for token sequences.
 
     Consumes:
@@ -542,7 +542,7 @@ class StackedNeuralCDE(nn.Module):
         channels: int,
         hidden_channels: int,
         *,
-        num_cde_layers: int = 1,
+        num_cde_layers: int = 2,
         interpolation: str = "linear",
         solver: str = "rk4",
         num_layers: int = 2,
@@ -551,7 +551,7 @@ class StackedNeuralCDE(nn.Module):
         time_norm_mode: str = "utterance",
         time_norm_value: float = 1024.0,
         min_duration: float = 1e-3,
-        init_type: str = "unet",
+        init_type: str = "reverse_lstm",
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
@@ -653,6 +653,9 @@ class StackedNeuralCDE(nn.Module):
             self.readout_unet = None
             self.readout_linear = nn.Linear(self.hidden_channels, self.channels)
 
+        gate_init = 3.0
+        self.gate_logit = nn.Parameter(torch.tensor(gate_init))
+
     def forward(
         self,
         x: torch.Tensor,
@@ -719,6 +722,8 @@ class StackedNeuralCDE(nn.Module):
             y = self._readout(z_top, mask_bool)
 
         y = y.to(dtype=out_dtype)
+        gate = torch.sigmoid(self.gate_logit)
+        y = x + gate * y
         return y * mask.to(dtype=out_dtype)
 
     def _phone_start_times(
