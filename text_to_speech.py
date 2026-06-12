@@ -302,7 +302,7 @@ def inference(
 
     wav = out.squeeze().cpu().numpy()
     if wav.shape[-1] > 50:
-        wav = wav[..., 100:-100]
+        wav = wav[..., 12000:-10000]
     return wav
 
 
