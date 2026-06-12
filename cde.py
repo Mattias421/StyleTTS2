@@ -552,6 +552,7 @@ class NeuralCDE(nn.Module):
         time_norm_value: float = 1024.0,
         min_duration: float = 1e-3,
         init_type: str = "reverse_lstm",
+        bidirectional: bool = False,
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
@@ -581,6 +582,7 @@ class NeuralCDE(nn.Module):
         self.time_norm_value = float(time_norm_value)
         self.min_duration = float(min_duration)
         self.init_type = str(init_type)
+        self.bidirectional = bool(bidirectional)
         self.adjoint = bool(adjoint)
         self.dt = float(dt)
         self.atol = float(atol)
@@ -641,9 +643,10 @@ class NeuralCDE(nn.Module):
         )
 
         # Read out only the top CDE layer.
+        readout_channels = self.hidden_channels * (2 if self.bidirectional else 1)
         if self.readout_type == "unet":
             self.readout_unet = UNet1D(
-                in_channels=self.hidden_channels,
+                in_channels=readout_channels,
                 mid_channels=self.hidden_channels,
                 out_channels=self.channels,
                 num_layers=num_layers,
@@ -652,7 +655,7 @@ class NeuralCDE(nn.Module):
             self.readout_linear = None
         else:
             self.readout_unet = None
-            self.readout_linear = nn.Linear(self.hidden_channels, self.channels)
+            self.readout_linear = nn.Linear(readout_channels, self.channels)
 
         gate_init = 3.0
         self.gate_logit = nn.Parameter(torch.tensor(gate_init))
@@ -705,12 +708,19 @@ class NeuralCDE(nn.Module):
             path = torch.cat([x_t, starts.unsqueeze(-1)], dim=-1)
             path = self._fill_forward(path, mask_bool)
 
+            solve_path = path
+            solve_mask = mask_bool
+            if self.bidirectional:
+                reverse_path = self._reverse_valid_sequence(path, mask_bool)
+                solve_path = torch.cat([path, reverse_path], dim=0)
+                solve_mask = torch.cat([mask_bool, mask_bool], dim=0)
+
             if t == 1:
-                z0 = self._initial_state(path, mask_bool)
+                z0 = self._initial_state(solve_path, solve_mask)
                 z_t = z0.unsqueeze(1)
             else:
-                X, coeffs = self._make_interpolation(path)
-                z0 = self._initial_state(path, mask_bool)
+                X, coeffs = self._make_interpolation(solve_path)
+                z0 = self._initial_state(solve_path, solve_mask)
 
                 t_grid = torch.arange(t, device=x.device, dtype=compute_dtype)
 
@@ -719,6 +729,10 @@ class NeuralCDE(nn.Module):
 
             # z_t: (B, L, num_cde_layers * hidden)
             z_top = self._top_hidden(z_t)
+            if self.bidirectional:
+                z_forward, z_backward = z_top.split(b, dim=0)
+                z_backward = self._reverse_valid_sequence(z_backward, mask_bool)
+                z_top = torch.cat([z_forward, z_backward], dim=-1)
 
             y = self._readout(z_top, mask_bool)
 
@@ -762,6 +776,27 @@ class NeuralCDE(nn.Module):
             valid_mask.unsqueeze(-1),
             path,
             final_values.expand_as(path),
+        )
+
+    @staticmethod
+    def _reverse_valid_sequence(
+        sequence: torch.Tensor,
+        valid_mask: torch.Tensor,
+    ) -> torch.Tensor:
+        lengths = valid_mask.long().sum(dim=1).clamp_min(1)
+        positions = torch.arange(sequence.shape[1], device=sequence.device).unsqueeze(0)
+        reverse_idx = (lengths.unsqueeze(1) - 1 - positions).clamp_min(0)
+        reverse_idx = reverse_idx.unsqueeze(-1).expand_as(sequence)
+        reversed_sequence = sequence.gather(dim=1, index=reverse_idx)
+
+        final_idx = (lengths - 1).view(-1, 1, 1).expand(
+            -1, 1, sequence.shape[-1]
+        )
+        final_values = reversed_sequence.gather(dim=1, index=final_idx)
+        return torch.where(
+            valid_mask.unsqueeze(-1),
+            reversed_sequence,
+            final_values.expand_as(reversed_sequence),
         )
 
     def _make_interpolation(self, path: torch.Tensor):
@@ -868,7 +903,7 @@ class NeuralCDE(nn.Module):
         z_t: torch.Tensor,
         valid_mask: torch.Tensor,
     ) -> torch.Tensor:
-        # z_t is only the top layer: (B, L, hidden)
+        # z_t is the top layer, with both directions concatenated when enabled.
         if self.readout_type == "unet":
             z_seq = z_t.transpose(1, 2)  # (B, hidden, L)
 
