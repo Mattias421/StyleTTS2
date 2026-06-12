@@ -54,6 +54,7 @@ model_params:
     time_norm_value: 1024.0
     min_duration: 0.001
     adjoint: true
+    bidirectional: false
     dt: 1.0
     atol: 0.00001
     rtol: 0.00001

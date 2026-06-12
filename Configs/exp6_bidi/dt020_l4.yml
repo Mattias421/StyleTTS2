@@ -1,10 +1,10 @@
-log_dir: "Models/exp4_stacked/dt025"
+log_dir: "Models/exp6_bidi/dt020_l4"
 save_freq: 1
 log_interval: 10
 device: "cuda"
-epochs: 3 # use SLM for epoch 4+
-batch_size: 6
-max_len: 800
+epochs: 3
+batch_size: 4
+max_len: 100
 pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
 second_stage_load_pretrained: true
 load_only_params: true
@@ -17,7 +17,7 @@ PLBERT_dir: "Utils/PLBERT/"
 data_params:
   train_data: "Data/train_list_esd.txt"
   val_data: "Data/val_list_esd.txt"
-  root_path: "/mnt/parscratch/users/acq22mc/data"
+  root_path: "/store/store2/data"
   OOD_data: "Data/OOD_texts.txt"
   min_length: 50
 
@@ -42,6 +42,7 @@ model_params:
   cde:
     enabled: true
     params:
+      num_cde_layers: 4
       hidden_channels: 128
       interpolation: linear
       solver: rk4
@@ -52,8 +53,8 @@ model_params:
       time_norm_value: 1024.0
       min_duration: 0.001
       adjoint: true
-      bidirectional: false
-      dt: 1.0
+      bidirectional: true
+      dt: 0.2
       atol: 1.0e-05
       rtol: 1.0e-05
       dropout: 0.2
