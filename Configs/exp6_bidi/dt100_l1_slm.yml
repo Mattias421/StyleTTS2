@@ -1,13 +1,13 @@
-log_dir: "Models/exp6_bidi/dt100_l4"
+log_dir: "Models/exp6_bidi/dt100_l1"
 save_freq: 1
 log_interval: 10
 device: "cuda"
-epochs: 3
-batch_size: 4
-max_len: 100
-pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
+epochs: 5 # use SLM for epoch 4+
+batch_size: 2
+max_len: 175
+pretrained_model: "Models/exp6_bidi/dt100_l1/epoch_2nd_00002.pth"
 second_stage_load_pretrained: true
-load_only_params: true
+load_only_params: false
 
 F0_path: "Utils/JDC/bst.t7"
 ASR_config: "Utils/ASR/config.yml"
@@ -42,7 +42,7 @@ model_params:
   cde:
     enabled: true
     params:
-      num_cde_layers: 4
+      num_cde_layers: 1
       hidden_channels: 128
       interpolation: linear
       solver: rk4

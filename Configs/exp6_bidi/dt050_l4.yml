@@ -1,4 +1,4 @@
-log_dir: "Models/exp6_bidi/dt100_l4"
+log_dir: "Models/exp6_bidi/dt050_l4"
 save_freq: 1
 log_interval: 10
 device: "cuda"
@@ -17,7 +17,7 @@ PLBERT_dir: "Utils/PLBERT/"
 data_params:
   train_data: "Data/train_list_esd.txt"
   val_data: "Data/val_list_esd.txt"
-  root_path: "/store/store4/data"
+  root_path: "/store/store2/data"
   OOD_data: "Data/OOD_texts.txt"
   min_length: 50
 
@@ -54,7 +54,7 @@ model_params:
       min_duration: 0.001
       adjoint: true
       bidirectional: true
-      dt: 1.0
+      dt: 0.5
       atol: 1.0e-05
       rtol: 1.0e-05
       dropout: 0.2

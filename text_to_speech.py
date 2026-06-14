@@ -290,6 +290,11 @@ def inference(
             cde_durations = (pred_dur / 2 ** n_down).clamp(min=1).unsqueeze(0)
             cde_mask = (~text_mask).unsqueeze(1).float()
             t_en = model.cde(t_en, cde_mask, cde_durations)
+        if 'duration_lstm' in model:
+            n_down = model.text_aligner.n_down
+            lstm_durations = (pred_dur / 2 ** n_down).clamp(min=1).unsqueeze(0)
+            lstm_mask = (~text_mask).unsqueeze(1).float()
+            t_en = model.duration_lstm(t_en, lstm_mask, lstm_durations)
 
         asr = t_en @ pred_aln_trg.unsqueeze(0)
         if model_params.decoder.type == "hifigan":

@@ -1,8 +1,8 @@
-log_dir: "Models/exp6_bidi/dt100_l4"
+log_dir: "Models/exp6_bidi/dt100_l1"
 save_freq: 1
 log_interval: 10
 device: "cuda"
-epochs: 3
+epochs: 3 # use SLM for epoch 4+
 batch_size: 4
 max_len: 100
 pretrained_model: "Models/LibriTTS/epochs_2nd_00020.pth"
@@ -42,7 +42,7 @@ model_params:
   cde:
     enabled: true
     params:
-      num_cde_layers: 4
+      num_cde_layers: 1
       hidden_channels: 128
       interpolation: linear
       solver: rk4

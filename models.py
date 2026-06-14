@@ -652,6 +652,14 @@ def build_model(args, text_aligner, pitch_extractor, bert):
             num_cde_layers=num_cde_layers,
             **cde_kwargs,
         )
+
+    duration_lstm = None
+    if getattr(getattr(args, "duration_lstm", None), "enabled", False):
+        from duration_lstm import DurationLSTM
+        duration_lstm = DurationLSTM(
+            channels=args.hidden_dim,
+            **dict(args.duration_lstm.params),
+        )
         
     # define diffusion model
     if args.multispeaker:
@@ -706,6 +714,8 @@ def build_model(args, text_aligner, pitch_extractor, bert):
        )
     if cde is not None:
         nets.cde = cde
+    if duration_lstm is not None:
+        nets.duration_lstm = duration_lstm
     
     return nets
 

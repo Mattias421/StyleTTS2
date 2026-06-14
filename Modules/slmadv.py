@@ -90,6 +90,12 @@ class SLMAdversarialLoss(torch.nn.Module):
                 cde_durations = s2s_attn.sum(axis=-1).detach()
                 cde_mask = (~text_mask).unsqueeze(1).float()
                 t_en = self.model.cde(t_en, cde_mask, cde_durations)
+            if 'duration_lstm' in self.model:
+                lstm_durations = s2s_attn.sum(axis=-1).detach()
+                lstm_mask = (~text_mask).unsqueeze(1).float()
+                t_en = self.model.duration_lstm(
+                    t_en, lstm_mask, lstm_durations
+                )
 
         asr_pred = t_en @ s2s_attn
 
