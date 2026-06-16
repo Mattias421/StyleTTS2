@@ -1,0 +1,38 @@
+root_path: /store/store2/data
+text_list: Data/val_list_esd.txt
+output_dir: comparisons/cde_duration_sensitivity
+device: cuda
+seed: 0
+
+sample_count: 100
+detail_rows: [1, 2, 3, 4, 5]
+duration_sources: [aligned, predicted]
+log_duration_epsilon: 0.1
+variant_batch_size: 16
+skip_missing_checkpoints: true
+
+models:
+  - name: dt020_l2
+    model_config: Configs/exp6_bidi/dt020_slm.yml
+    checkpoint: Models/exp6_bidi/dt020/epoch_2nd_00004.pth
+  - name: dt020_l4
+    model_config: Configs/exp6_bidi/dt020_l4_slm.yml
+    checkpoint: Models/exp6_bidi/dt020_l4/epoch_2nd_00005.pth
+  - name: dt050_l1
+    model_config: Configs/exp6_bidi/dt050_l1_slm.yml
+    checkpoint: Models/exp6_bidi/dt050_l1/epoch_2nd_00004.pth
+  - name: dt050_l2
+    model_config: Configs/exp6_bidi/dt050_slm.yml
+    checkpoint: Models/exp6_bidi/dt050/epoch_2nd_00004.pth
+  - name: dt050_l4
+    model_config: Configs/exp6_bidi/dt050_l4_slm.yml
+    checkpoint: Models/exp6_bidi/dt050_l4/epoch_2nd_00005.pth
+  - name: dt100_l1
+    model_config: Configs/exp6_bidi/dt100_l1_slm.yml
+    checkpoint: Models/exp6_bidi/dt100_l1/epoch_2nd_00004.pth
+  - name: dt100_l2
+    model_config: Configs/exp6_bidi/dt100_slm.yml
+    checkpoint: Models/exp6_bidi/dt100/epoch_2nd_00004.pth
+  - name: dt100_l4
+    model_config: Configs/exp6_bidi/dt100_l4_slm.yml
+    checkpoint: Models/exp6_bidi/dt100_l4/epoch_2nd_00005.pth
