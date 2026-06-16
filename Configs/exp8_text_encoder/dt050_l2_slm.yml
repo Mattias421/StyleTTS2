@@ -2,8 +2,8 @@ log_dir: Models/exp8_text_encoder/dt050_l2
 save_freq: 1
 log_interval: 10
 device: cuda
-epochs: 4
-batch_size: 4
+epochs: 2
+batch_size: 2
 max_len: 800
 pretrained_model: Models/exp8_text_encoder/dt050_l2/epoch_2nd_00002.pth
 second_stage_load_pretrained: true
@@ -15,7 +15,7 @@ PLBERT_dir: Utils/PLBERT/
 data_params:
   train_data: Data/train_list_esd.txt
   val_data: Data/val_list_esd.txt
-  root_path: /mnt/parscratch/users/acq22mc/data
+  root_path: /store/store4/data
   OOD_data: Data/OOD_texts.txt
   min_length: 50
 preprocess_params:
