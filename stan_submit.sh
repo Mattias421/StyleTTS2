@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=styletts2
-#SBATCH --time=96:00:00
+#SBATCH --job-name=smalstyletts2
+#SBATCH --time=24:00:00
 #SBATCH --cpus-per-task=1
-#SBATCH --mem=128G
+#SBATCH --mem=90G
 #SBATCH --output=Models/logs/styletts2.out
 #SBATCH --partition=gpu,gpu-h100,gpu-h100-nvl
 #SBATCH --qos=gpu

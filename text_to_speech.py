@@ -1,4 +1,5 @@
 import argparse
+import copy
 import json
 import random
 from pathlib import Path
@@ -12,6 +13,7 @@ import yaml
 
 from Modules.diffusion.sampler import ADPM2Sampler, DiffusionSampler, KarrasSchedule
 from Utils.PLBERT.util import load_plbert
+from cde import TextEncoderCDE
 from models import build_model, load_ASR_models, load_F0_models
 from text_utils import TextCleaner
 from utils import recursive_munch
@@ -67,6 +69,16 @@ def length_to_mask(lengths):
 def load_yaml(path):
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+
+
+def merge_dict(base, overrides):
+    merged = copy.deepcopy(base)
+    for key, value in overrides.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = merge_dict(merged[key], value)
+        else:
+            merged[key] = copy.deepcopy(value)
+    return merged
 
 
 def parse_esd_list(path):
@@ -170,7 +182,7 @@ def load_inference_checkpoint(model, checkpoint_path):
     return state
 
 
-def load_tts_model(model_config, checkpoint_path, device):
+def load_tts_model(model_config, checkpoint_path, device, text_encoder_cde=False):
     text_aligner = load_ASR_models(
         model_config.get("ASR_path", False),
         model_config.get("ASR_config", False),
@@ -180,6 +192,21 @@ def load_tts_model(model_config, checkpoint_path, device):
 
     model_params = recursive_munch(model_config["model_params"])
     model = build_model(model_params, text_aligner, pitch_extractor, plbert)
+    if text_encoder_cde:
+        cde_config = dict(model_config["model_params"]["cde"]["params"])
+        cde_config["cde_depth"] = cde_config.pop(
+            "num_cde_layers",
+            cde_config.get("cde_depth", 2),
+        )
+        model.text_encoder = TextEncoderCDE(
+            channels=model_params.hidden_dim,
+            kernel_size=5,
+            depth=model_params.n_layer,
+            n_symbols=model_params.n_token,
+            **cde_config,
+        )
+        if "cde" in model:
+            del model["cde"]
     load_inference_checkpoint(model, checkpoint_path)
 
     for key in model:
@@ -238,6 +265,8 @@ def inference(
     beta,
     diffusion_steps,
     embedding_scale,
+    trim_start_samples,
+    trim_end_samples,
 ):
     tokens = tokens_from_phonemized(phonemized_text, text_cleaner, device)
 
@@ -245,7 +274,6 @@ def inference(
         input_lengths = torch.LongTensor([tokens.shape[-1]]).to(device)
         text_mask = length_to_mask(input_lengths).to(device)
 
-        t_en = model.text_encoder(tokens, input_lengths, text_mask)
         bert_dur = model.bert(tokens, attention_mask=(~text_mask).int())
         d_en = model.bert_encoder(bert_dur).transpose(-1, -2)
 
@@ -279,6 +307,16 @@ def inference(
             pred_aln_trg[i, c_frame : c_frame + frame_count] = 1
             c_frame += frame_count
 
+        if isinstance(model.text_encoder, TextEncoderCDE):
+            t_en = model.text_encoder(
+                tokens,
+                input_lengths,
+                text_mask,
+                pred_aln_trg.unsqueeze(0),
+            )
+        else:
+            t_en = model.text_encoder(tokens, input_lengths, text_mask)
+
         en = d.transpose(-1, -2) @ pred_aln_trg.unsqueeze(0)
         if model_params.decoder.type == "hifigan":
             asr_new = torch.zeros_like(en)
@@ -293,6 +331,11 @@ def inference(
             cde_durations = (pred_dur / 2 ** n_down).clamp(min=1).unsqueeze(0)
             cde_mask = (~text_mask).unsqueeze(1).float()
             t_en = model.cde(t_en, cde_mask, cde_durations)
+        if 'duration_lstm' in model:
+            n_down = model.text_aligner.n_down
+            lstm_durations = (pred_dur / 2 ** n_down).clamp(min=1).unsqueeze(0)
+            lstm_mask = (~text_mask).unsqueeze(1).float()
+            t_en = model.duration_lstm(t_en, lstm_mask, lstm_durations)
 
         asr = t_en @ pred_aln_trg.unsqueeze(0)
         if model_params.decoder.type == "hifigan":
@@ -304,8 +347,11 @@ def inference(
         out = model.decoder(asr, f0_pred, n_pred, ref.squeeze().unsqueeze(0))
 
     wav = out.squeeze().cpu().numpy()
-    if wav.shape[-1] > 50:
-        wav = wav[..., 12000:-10000]
+    trim_start_samples = max(0, int(trim_start_samples))
+    trim_end_samples = max(0, int(trim_end_samples))
+    if wav.shape[-1] > trim_start_samples + trim_end_samples:
+        end = -trim_end_samples if trim_end_samples else None
+        wav = wav[..., trim_start_samples:end]
     return wav
 
 
@@ -363,6 +409,10 @@ def main():
 
     model_config_path = config["model_config"]
     model_config = load_yaml(model_config_path)
+    model_config["model_params"] = merge_dict(
+        model_config["model_params"],
+        config.get("model_overrides", {}),
+    )
     sample_rate = int(config.get("sample_rate", model_config["preprocess_params"].get("sr", 24000)))
     root_path = Path(config["root_path"])
     split_name, text_list, ref_list = resolve_split_paths(config)
@@ -383,7 +433,12 @@ def main():
     print(f"Using {split_name} split: {text_list}")
     print(f"Using references: {ref_list}")
     print(f"Writing samples to: {output_dir}")
-    model, model_params = load_tts_model(model_config, config["checkpoint"], device)
+    model, model_params = load_tts_model(
+        model_config,
+        config["checkpoint"],
+        device,
+        text_encoder_cde=bool(config.get("text_encoder_cde", False)),
+    )
     to_mel = build_to_mel(model_config)
     text_cleaner = TextCleaner()
     sampler = DiffusionSampler(
@@ -397,6 +452,8 @@ def main():
     beta = float(config.get("beta", 0.7))
     diffusion_steps = int(config.get("diffusion_steps", 5))
     embedding_scale = float(config.get("embedding_scale", 1.0))
+    trim_start_samples = int(config.get("trim_start_samples", 12000))
+    trim_end_samples = int(config.get("trim_end_samples", 10000))
 
     style_cache = {}
     manifest_path = output_dir / "manifest.jsonl"
@@ -422,6 +479,8 @@ def main():
                 beta,
                 diffusion_steps,
                 embedding_scale,
+                trim_start_samples,
+                trim_end_samples,
             )
 
             output_path = output_dir / output_name(eval_entry, ref_entry, split_name)
@@ -439,6 +498,8 @@ def main():
                 "beta": beta,
                 "diffusion_steps": diffusion_steps,
                 "embedding_scale": embedding_scale,
+                "trim_start_samples": trim_start_samples,
+                "trim_end_samples": trim_end_samples,
                 "sample_rate": sample_rate,
             }
             manifest.write(json.dumps(row, ensure_ascii=False) + "\n")
