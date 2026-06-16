@@ -232,7 +232,7 @@ def main(config_path):
             g['min_lr'] = 0
             g['weight_decay'] = 1e-4
     for g in optimizer.optimizers['text_encoder'].param_groups:
-        g['betas'] = (0.0, 0.99)
+        g['betas'] = (0.9, 0.99)
         g['lr'] = optimizer_params.ft_lr
         g['initial_lr'] = optimizer_params.ft_lr
         g['min_lr'] = 0
@@ -322,11 +322,8 @@ def main(config_path):
             mask_ST = mask_from_lens(s2s_attn, input_lengths, mel_input_length // (2 ** n_down))
             s2s_attn_mono = maximum_path(s2s_attn, mask_ST)
 
-            # encode with cde
-            t_en = model.text_encoder(texts, input_lengths, text_mask)
-            cde_durations = s2s_attn_mono.sum(axis=-1).detach()
-            cde_mask = (~text_mask).unsqueeze(1).float()
-            t_en = model.text_encoder(t_en, cde_mask, cde_durations)
+            # encode with CDE-augmented text encoder
+            t_en = model.text_encoder(texts, input_lengths, text_mask, s2s_attn_mono)
             
             # 50% of chance of using monotonic version
             if bool(random.getrandbits(1)):
@@ -633,10 +630,7 @@ def main(config_path):
                         s2s_attn_mono = maximum_path(s2s_attn, mask_ST)
 
                         # encode
-                        t_en = model.text_encoder(texts, input_lengths, text_mask)
-                        cde_durations = s2s_attn_mono.sum(axis=-1).detach()
-                        cde_mask = (~text_mask).unsqueeze(1).float()
-                        t_en = model.text_encoder(t_en, cde_mask, cde_durations)
+                        t_en = model.text_encoder(texts, input_lengths, text_mask, s2s_attn_mono)
                         asr = (t_en @ s2s_attn_mono)
 
                         d_gt = s2s_attn_mono.sum(axis=-1).detach()

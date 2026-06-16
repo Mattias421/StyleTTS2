@@ -4,10 +4,10 @@ log_interval: 10
 device: cuda
 epochs: 2
 batch_size: 2
-max_len: 800
+max_len: 175
 pretrained_model: Models/exp8_text_encoder/dt050_l2/epoch_2nd_00002.pth
 second_stage_load_pretrained: true
-load_only_params: false
+load_only_params: true
 F0_path: Utils/JDC/bst.t7
 ASR_config: Utils/ASR/config.yml
 ASR_path: Utils/ASR/epoch_00080.pth
@@ -15,7 +15,7 @@ PLBERT_dir: Utils/PLBERT/
 data_params:
   train_data: Data/train_list_esd.txt
   val_data: Data/val_list_esd.txt
-  root_path: /store/store4/data
+  root_path: /store/store2/data
   OOD_data: Data/OOD_texts.txt
   min_length: 50
 preprocess_params:
@@ -128,8 +128,8 @@ loss_params:
   lambda_ce: 20.0
   lambda_sty: 1.0
   lambda_diff: 1.0
-  diff_epoch: 2
-  joint_epoch: 4
+  diff_epoch: 0
+  joint_epoch: 0
 optimizer_params:
   lr: 0.0001
   bert_lr: 1.0e-05
@@ -137,7 +137,7 @@ optimizer_params:
 slmadv_params:
   min_len: 400
   max_len: 500
-  batch_percentage: 0.5
+  batch_percentage: 1.0
   iter: 10
   thresh: 5
   scale: 0.01

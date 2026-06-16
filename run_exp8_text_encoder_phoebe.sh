@@ -7,7 +7,8 @@ cd "$script_dir"
 source .venv/bin/activate
 
 export TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD=1
-export HF_HOME=${HF_HOME:-/store/store4/acq22mc/.cache/huggingface}
+export PYTORCH_CUDA_ALLOC_CONF=${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}
+export HF_HOME=${HF_HOME:-/store/store2/data/.cache/huggingface}
 export HF_HUB_CACHE=${HF_HUB_CACHE:-$HF_HOME/hub}
 export HF_HUB_DISABLE_XET=1
 mkdir -p "$HF_HOME"
