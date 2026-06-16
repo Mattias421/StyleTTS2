@@ -553,6 +553,7 @@ class NeuralCDE(nn.Module):
         min_duration: float = 1e-3,
         init_type: str = "reverse_lstm",
         bidirectional: bool = False,
+        shared_vector_field: bool = False,
         adjoint: bool = True,
         dt: float = 0.01,
         atol: float = 1e-5,
@@ -583,6 +584,7 @@ class NeuralCDE(nn.Module):
         self.min_duration = float(min_duration)
         self.init_type = str(init_type)
         self.bidirectional = bool(bidirectional)
+        self.shared_vector_field = bool(shared_vector_field)
         self.adjoint = bool(adjoint)
         self.dt = float(dt)
         self.atol = float(atol)
@@ -600,14 +602,23 @@ class NeuralCDE(nn.Module):
 
         self.input_channels = self.channels + 1
 
-        self.func = StackedCDEFunc(
-            input_channels=self.input_channels,
-            hidden_channels=self.hidden_channels,
-            num_cde_layers=self.num_cde_layers,
-            num_layers=num_layers,
-            output_activation=vf_output_activation,
-            dropout=self.dropout,
-        )
+        if self.shared_vector_field:
+            self.func = CDEFunc(
+                input_channels=self.input_channels,
+                hidden_channels=self.hidden_channels,
+                num_layers=num_layers,
+                output_activation=vf_output_activation,
+                dropout=self.dropout,
+            )
+        else:
+            self.func = StackedCDEFunc(
+                input_channels=self.input_channels,
+                hidden_channels=self.hidden_channels,
+                num_cde_layers=self.num_cde_layers,
+                num_layers=num_layers,
+                output_activation=vf_output_activation,
+                dropout=self.dropout,
+            )
 
         self.init_rf = 8
 
