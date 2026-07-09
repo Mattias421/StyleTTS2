@@ -50,7 +50,10 @@ class SpecDiscriminator(nn.Module):
 
         fmap = []
         y = y.squeeze(1)
-        y = stft(y, self.fft_size, self.shift_size, self.win_length, self.window.to(y.get_device()))
+        # Keep the STFT window on the same device as the waveform tensor.
+        # `Tensor.get_device()` only works for CUDA tensors, so use `.device`
+        # to support the CPU fallback path used on Mimas.
+        y = stft(y, self.fft_size, self.shift_size, self.win_length, self.window.to(y.device))
         y = y.unsqueeze(1)
         for i, d in enumerate(self.discriminators):
             y = d(y)
