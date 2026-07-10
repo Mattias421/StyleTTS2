@@ -87,6 +87,20 @@ accelerate launch --mixed_precision=fp16 --num_processes=1 train_finetune_accele
 ```
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yl4579/StyleTTS2/blob/main/Colab/StyleTTS2_Finetune_Demo.ipynb)
 
+### ESD minute-budget splits
+The ESD manifests can be regenerated with a small shared eval pool and nested per-speaker training budgets:
+```bash
+uv run --with phonemizer python3 manifest_esd.py --mode minutes --source-manifest-dir Data --esd-root /store/store4/data --out-dir Data
+```
+This writes:
+- shared eval manifests with 4 sentence IDs each for `val`, `test`, `ref_val`, and `ref_test`
+- nested training manifests for 1, 5, 15, 30, and 60 minutes per speaker
+- `Data/esd_minutes_split_plan.json` with the exact sentence-ID selections and duration totals
+
+If you have access to the raw `ESD_og` transcripts and a working `espeak` backend, you can omit `--source-manifest-dir` and let the script phonemize directly. The current recommendation is to keep the 60-minute run near the existing finetune baseline and increase epochs as the budget shrinks. A practical starting point is 50 epochs for 60m, then 75, 100, 150, and 200 epochs for 30m, 15m, 5m, and 1m respectively. If you want to keep SLM adversarial training disabled, set `joint_epoch` above the configured `epochs`.
+
+The generated phoneme text is normalized so punctuation is tokenized the same way StyleTTS2 expects, for example `hello .` rather than `hello.`.
+
 ### Common Issues
 [@Kreevoz](https://github.com/Kreevoz) has made detailed notes on common issues in finetuning, with suggestions in maximizing audio quality: [#81](https://github.com/yl4579/StyleTTS2/discussions/81). Some of these also apply to training from scratch. [@IIEleven11](https://github.com/IIEleven11) has also made a guideline for fine-tuning: [#128](https://github.com/yl4579/StyleTTS2/discussions/128).
 
